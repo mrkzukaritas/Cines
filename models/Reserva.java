@@ -26,10 +26,7 @@ public class Reserva {
     }
 
     public void agregarSilla(Asiento asiento, double precio) {
-        DetalleReserva detalle = new DetalleReserva();
-        detalle.setAsiento(asiento);
-        detalle.setPrecio(precio);
-        detalle.setReserva(this);
+        DetalleReserva detalle = new DetalleReserva(asiento, precio, this);
         detalles.add(detalle);
     }
 

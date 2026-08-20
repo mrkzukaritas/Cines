@@ -8,12 +8,11 @@ public class DetalleReserva {
     private Reserva reserva;
     private Asiento asiento;
 
-    public DetalleReserva() {
-    }
 
-    public DetalleReserva(int id, double precio) {
-        this.id = id;
+    public DetalleReserva(Asiento asiento, double precio, Reserva reserva) {
+        this.asiento = asiento;
         this.precio = precio;
+        this.reserva = reserva;
     }
 
     public double calcularSubtotal() {
