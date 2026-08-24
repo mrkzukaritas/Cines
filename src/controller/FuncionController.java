@@ -1,8 +1,8 @@
 package controller;
 
-import modelo.Asiento;
-import modelo.Cine;
-import modelo.Funcion;
+import models.Asiento;
+import models.Cine;
+import models.Funcion;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

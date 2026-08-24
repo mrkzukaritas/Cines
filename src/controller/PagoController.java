@@ -1,6 +1,6 @@
 package controller;
 
-import modelo.*;
+import models.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package controller;
 
-import modelo.Cliente;
+import models.Cliente;
 
 import java.util.ArrayList;
 import java.util.List;

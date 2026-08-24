@@ -1,8 +1,8 @@
 package controller;
 
-import modelo.Cine;
-import modelo.Funcion;
-import modelo.Sala;
+import models.Cine;
+import models.Funcion;
+import models.Sala;
 
 import java.util.List;
 import java.util.Optional;

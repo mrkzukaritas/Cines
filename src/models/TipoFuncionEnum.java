@@ -1,14 +1,5 @@
 package models;
 
-public interface TipoFuncion {
-    int getId();
-    String getNombre();
-}
-```
-
-        ```java
-package modelo;
-
 public enum TipoFuncionEnum implements TipoFuncion {
     DOBLADA(1, "Doblada"),
     SUBTITULADA(2, "Subtitulada"),
