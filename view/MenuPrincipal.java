@@ -33,7 +33,7 @@ public class MenuPrincipal {
         boolean salir = false;
         while (!salir) {
             mostrarMenu();
-            int opcion = leerEntero("Elige una opcion: ");
+            int opcion = leerEntero("Elige una opción: ");
             switch (opcion) {
                 case 1 -> verCinesYSalas();
                 case 2 -> verFunciones();
