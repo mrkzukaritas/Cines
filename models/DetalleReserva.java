@@ -5,7 +5,7 @@ public class DetalleReserva {
     private int id;
     private double precio;
 
-    private Reserva reservaaaaaa;
+    private Reserva reserva;
     private Asiento asiento;
 
 
