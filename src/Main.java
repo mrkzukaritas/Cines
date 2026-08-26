@@ -1,9 +1,9 @@
-import view.MenuPrincipal;
+import view.GUIPrincipal;
 
 import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MenuPrincipal().iniciar());
+        SwingUtilities.invokeLater(() -> new GUIPrincipal().iniciar());
     }
 }
