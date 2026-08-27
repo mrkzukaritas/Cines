@@ -1,52 +1,58 @@
 package models;
 
-public class Cliente {
+/**
+ * MODEL (Capa Model del MVC)
+ *
+ * Cliente hereda de Usuario (extends Usuario).
+ * Obtiene automáticamente: id, nombre, email, password, telefono
+ * y los métodos cerrarSesion() y actualizarPerfil().
+ *
+ * Solo agrega los métodos propios que aparecen bajo "Cliente" en el diagrama.
+ */
+public class Cliente extends Usuario {
 
-    private int id;
-    private String nombre;
-    private String email;
-    private String telefono;
-
-    public Cliente() {
+    public Cliente(int id, String nombre, String email, String password, String telefono) {
+        super(id, nombre, email, password, telefono); // llama al constructor de Usuario
     }
 
-    public Cliente(int id, String nombre, String email, String telefono) {
-        this.id = id;
-        this.nombre = nombre;
-        this.email = email;
-        this.telefono = telefono;
+    // ---------- Implementación de métodos abstractos heredados ----------
+    @Override
+    public void registrarse() {
+        System.out.println("Cliente " + nombre + " registrado exitosamente.");
     }
 
-    // Getters y Setters
-    public int getId() {
-        return id;
+    @Override
+    public void iniciarSesion() {
+        System.out.println("Cliente " + nombre + " inició sesión.");
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public Rol getRol() {
+        return Rol.CLIENTE;
     }
 
-    public String getNombre() {
-        return nombre;
+    // ---------- Métodos propios del diagrama (solo Cliente) ----------
+    public void buscarFunciones(String pelicula) {
+        System.out.println("Buscando funciones de: " + pelicula);
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void compararPrecios(String pelicula) {
+        System.out.println("Comparando precios para: " + pelicula);
     }
 
-    public String getEmail() {
-        return email;
+    public void seleccionarSilla(String funcion) {
+        System.out.println("Silla seleccionada para la función: " + funcion);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void realizarReserva() {
+        System.out.println("Reserva realizada por " + nombre);
     }
 
-    public String getTelefono() {
-        return telefono;
+    public void pagarReserva() {
+        System.out.println("Reserva pagada por " + nombre);
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void verHistorialReservar() {
+        System.out.println("Mostrando historial de reservas de " + nombre);
     }
 }
