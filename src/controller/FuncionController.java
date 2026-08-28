@@ -168,4 +168,15 @@ public class FuncionController {
         System.out.println(">> No se encontró la función con id " + id);
         return false;
     }
+    public Cine buscarCineDeSala(Sala sala) {
+
+        for (Cine cine : cines()) {
+
+            if (cine.getSalas().contains(sala)) {
+                return cine;
+            }
+        }
+
+        return null;
+    }
 }

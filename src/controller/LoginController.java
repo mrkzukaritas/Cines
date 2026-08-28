@@ -5,42 +5,27 @@ import models.Usuario;
 import exceptions.ValidationException;
 import exceptions.AutenticacionException;
 
-/**
- * CONTROLLER
- *
- * Conecta las interfaces Swing con AuthService.
- * No contiene la lógica de validación.
- */
 public class LoginController {
 
-    private AuthService authService;
+    private final AuthService authService;
 
     public LoginController(AuthService authService) {
         this.authService = authService;
     }
 
     /**
-     * Registra un usuario.
-     *
-     * @throws ValidationException si los datos no son válidos
+     * Registra un usuario. Relanza ValidationException para que la View
+     * (RegistroPanel) pueda capturarla y mostrar el mensaje real al usuario.
      */
-    public void manejarRegistro(Usuario usuario)
-            throws ValidationException {
-
+    public void manejarRegistro(Usuario usuario) throws ValidationException {
         authService.registrar(usuario);
     }
 
     /**
-     * Realiza el login.
-     *
-     * @return Usuario autenticado
-     * @throws AutenticacionException si las credenciales son incorrectas
+     * Intenta iniciar sesión. Relanza AutenticacionException para que
+     * LoginPanel capture el error y lo muestre.
      */
-    public Usuario manejarLogin(
-            String email,
-            String password
-    ) throws AutenticacionException {
-
+    public Usuario manejarLogin(String email, String password) throws AutenticacionException {
         return authService.iniciarSesion(email, password);
     }
 }

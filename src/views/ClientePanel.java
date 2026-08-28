@@ -7,8 +7,8 @@ import java.awt.*;
 
 public class ClientePanel extends JPanel {
 
-    private MainFrame frame;
-    private Cliente cliente;
+    private final MainFrame frame;
+    private final Cliente cliente;
 
     public ClientePanel(
             MainFrame frame,
@@ -18,175 +18,101 @@ public class ClientePanel extends JPanel {
         this.frame = frame;
         this.cliente = cliente;
 
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(20, 20));
 
-        // =================================================
-        // BARRA SUPERIOR
-        // =================================================
+        // =====================================================
+        // TITULO
+        // =====================================================
 
-        JPanel barraSuperior =
-                new JPanel(new BorderLayout());
-
-        JLabel titulo =
-                new JLabel("CINE");
+        JLabel titulo = new JLabel(
+                "Bienvenido, " + cliente.getNombre(),
+                SwingConstants.CENTER
+        );
 
         titulo.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        24
-                )
+                new Font("Arial", Font.BOLD, 28)
         );
 
-        barraSuperior.add(
-                titulo,
-                BorderLayout.WEST
-        );
+        add(titulo, BorderLayout.NORTH);
 
-        JButton btnSalir =
-                new JButton("Cerrar sesión");
-
-        barraSuperior.add(
-                btnSalir,
-                BorderLayout.EAST
-        );
-
-        add(
-                barraSuperior,
-                BorderLayout.NORTH
-        );
-
-        // =================================================
-        // CENTRO
-        // =================================================
-
-        JPanel contenido =
-                new JPanel();
-
-        contenido.setLayout(
-                new BoxLayout(
-                        contenido,
-                        BoxLayout.Y_AXIS
-                )
-        );
-
-        JLabel bienvenida =
-                new JLabel(
-                        "Bienvenido, " +
-                                cliente.getNombre()
-                );
-
-        bienvenida.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        24
-                )
-        );
-
-        bienvenida.setAlignmentX(
-                Component.CENTER_ALIGNMENT
-        );
-
-        contenido.add(
-                Box.createVerticalStrut(50)
-        );
-
-        contenido.add(
-                bienvenida
-        );
-
-        contenido.add(
-                Box.createVerticalStrut(40)
-        );
-
-        // =================================================
+        // =====================================================
         // BOTONES
-        // =================================================
+        // =====================================================
+
+        JPanel botones = new JPanel();
+
+        botones.setLayout(
+                new GridLayout(4, 1, 15, 15)
+        );
+
+        botones.setBorder(
+                BorderFactory.createEmptyBorder(
+                        40, 200, 40, 200
+                )
+        );
+
+        // VER PELICULAS
 
         JButton btnPeliculas =
-                new JButton("🎬 Películas");
+                new JButton("Ver películas");
+
+        // MIS RESERVAS
 
         JButton btnReservas =
-                new JButton("🎟 Mis reservas");
+                new JButton("Mis reservas");
+
+        // MI PERFIL
 
         JButton btnPerfil =
-                new JButton("👤 Mi perfil");
+                new JButton("Mi perfil");
 
-        Dimension tamaño =
-                new Dimension(
-                        250,
-                        50
-                );
+        // CERRAR SESION
 
-        btnPeliculas.setMaximumSize(tamaño);
-        btnReservas.setMaximumSize(tamaño);
-        btnPerfil.setMaximumSize(tamaño);
+        JButton btnCerrarSesion =
+                new JButton("Cerrar sesión");
 
-        btnPeliculas.setAlignmentX(
-                Component.CENTER_ALIGNMENT
-        );
-
-        btnReservas.setAlignmentX(
-                Component.CENTER_ALIGNMENT
-        );
-
-        btnPerfil.setAlignmentX(
-                Component.CENTER_ALIGNMENT
-        );
-
-        contenido.add(btnPeliculas);
-
-        contenido.add(
-                Box.createVerticalStrut(15)
-        );
-
-        contenido.add(btnReservas);
-
-        contenido.add(
-                Box.createVerticalStrut(15)
-        );
-
-        contenido.add(btnPerfil);
+        botones.add(btnPeliculas);
+        botones.add(btnReservas);
+        botones.add(btnPerfil);
+        botones.add(btnCerrarSesion);
 
         add(
-                contenido,
+                botones,
                 BorderLayout.CENTER
         );
 
-        // =================================================
+        // =====================================================
         // EVENTOS
-        // =================================================
+        // =====================================================
 
-        btnSalir.addActionListener(e ->
-                frame.cerrarSesion()
+        btnPeliculas.addActionListener(e ->
+                frame.mostrarPeliculas(cliente)
         );
 
-        btnPeliculas.addActionListener(e -> {
+        btnReservas.addActionListener(e ->
+                frame.mostrarReservas(cliente)
+        );
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Aquí veremos las películas."
-            );
+        btnPerfil.addActionListener(e ->
+                frame.mostrarPerfil(cliente)
+        );
 
-        });
+        btnCerrarSesion.addActionListener(e -> {
 
-        btnReservas.addActionListener(e -> {
+            int opcion =
+                    JOptionPane.showConfirmDialog(
+                            this,
+                            "¿Está seguro de cerrar sesión?",
+                            "Cerrar sesión",
+                            JOptionPane.YES_NO_OPTION
+                    );
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Aquí aparecerán tus reservas."
-            );
+            if (opcion == JOptionPane.YES_OPTION) {
 
-        });
+                cliente.cerrarSesion();
 
-        btnPerfil.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Aquí aparecerá tu información."
-            );
-
+                frame.mostrarLogin();
+            }
         });
     }
 }
