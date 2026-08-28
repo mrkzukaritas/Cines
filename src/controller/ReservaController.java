@@ -30,7 +30,7 @@ public class ReservaController {
         }
         double precio = reserva.getFuncion() != null ? reserva.getFuncion().getPrecio() : 0;
         asiento.marcarOcupada();
-        reserva.agregarSilla(asiento, precio);
+        reserva.agregarAsiento(asiento, precio);
         reserva.calcularTotal();
         return true;
     }

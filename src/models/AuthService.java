@@ -56,4 +56,7 @@ public class AuthService {
         encontrado.iniciarSesion(); // ejecuta la versión de Cliente o Administrador
         return encontrado;
     }
+    public void agregarUsuarioInicial(Usuario usuario) {
+        usuarios.add(usuario);
+    }
 }

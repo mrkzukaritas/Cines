@@ -25,7 +25,7 @@ public class Reserva {
         this.total = total;
     }
 
-    public void agregarSilla(Asiento asiento, double precio) {
+    public void agregarAsiento(Asiento asiento, double precio) {
         DetalleReserva detalle = new DetalleReserva(asiento, precio, this);
         detalles.add(detalle);
     }

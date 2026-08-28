@@ -1,89 +1,199 @@
 package models;
 
 import exceptions.ValidationException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * SERVICE - CRUD de Cines y sus Salas.
- * Responsabilidad: crear/editar/eliminar cines y salas.
- * NO maneja funciones (eso es trabajo de FuncionController/FuncionService).
+ *
+ * Responsabilidad:
+ * - Crear cines
+ * - Crear salas
+ * - Consultar cines y salas
+ * - Actualizar cines
+ * - Eliminar cines y salas
+ *
+ * NO maneja funciones.
+ * Las funciones son responsabilidad de FuncionController.
  */
 public class CineService {
 
     private final List<Cine> cines = new ArrayList<>();
+
     private int contadorCineId = 1;
     private int contadorSalaId = 1;
 
-    // ---------- CREATE: Cine ----------
-    public Cine crearCine(String nombre, String direccion, String ciudad) throws ValidationException {
+    // =========================================================
+    // CREATE - CINE
+    // =========================================================
+
+    public Cine crearCine(
+            String nombre,
+            String direccion,
+            String ciudad
+    ) throws ValidationException {
+
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new ValidationException("El nombre del cine es obligatorio.");
+            throw new ValidationException(
+                    "El nombre del cine es obligatorio."
+            );
         }
+
         if (ciudad == null || ciudad.trim().isEmpty()) {
-            throw new ValidationException("La ciudad es obligatoria.");
+            throw new ValidationException(
+                    "La ciudad es obligatoria."
+            );
         }
-        Cine nuevo = new Cine(contadorCineId++, nombre, direccion, ciudad);
+
+        Cine nuevo = new Cine(
+                contadorCineId++,
+                nombre,
+                direccion,
+                ciudad
+        );
+
         cines.add(nuevo);
+
         return nuevo;
     }
 
-    // ---------- CREATE: Sala (dentro de un cine existente) ----------
-    public Sala crearSala(Cine cine, String nombre, int capacidad, String tipo) throws ValidationException {
-        if (!cines.contains(cine)) {
-            throw new ValidationException("El cine no existe en el sistema.");
+    // =========================================================
+    // CREATE - SALA
+    // =========================================================
+
+    public Sala crearSala(
+            Cine cine,
+            String nombre,
+            int capacidad,
+            String tipo
+    ) throws ValidationException {
+
+        if (cine == null || !cines.contains(cine)) {
+            throw new ValidationException(
+                    "El cine no existe en el sistema."
+            );
         }
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new ValidationException(
+                    "El nombre de la sala es obligatorio."
+            );
+        }
+
         if (capacidad <= 0) {
-            throw new ValidationException("La capacidad debe ser mayor a 0.");
+            throw new ValidationException(
+                    "La capacidad debe ser mayor a 0."
+            );
         }
-        Sala nueva = new Sala(contadorSalaId++, nombre, capacidad, tipo);
+
+        Sala nueva = new Sala(
+                contadorSalaId++,
+                nombre,
+                capacidad,
+                tipo
+        );
+
+        // IMPORTANTE:
+        // La sala ahora conoce a qué cine pertenece.
+        nueva.setCine(cine);
+
+        // La sala también queda registrada dentro del cine.
         cine.getSalas().add(nueva);
+
         return nueva;
     }
 
-    // ---------- READ ----------
+    // =========================================================
+    // READ - CINES
+    // =========================================================
+
     public List<Cine> listarTodos() {
         return cines;
     }
 
     public Optional<Cine> buscarPorId(int id) {
-        return cines.stream().filter(c -> c.getId() == id).findFirst();
+
+        return cines.stream()
+                .filter(c -> c.getId() == id)
+                .findFirst();
     }
 
+    // =========================================================
+    // READ - SALAS
+    // =========================================================
+
     public Optional<Sala> buscarSalaPorId(int idSala) {
+
         for (Cine cine : cines) {
+
             for (Sala sala : cine.getSalas()) {
+
                 if (sala.getId() == idSala) {
                     return Optional.of(sala);
                 }
             }
         }
+
         return Optional.empty();
     }
 
-    // ---------- UPDATE ----------
-    public boolean actualizarCine(int id, String nombre, String direccion, String ciudad) {
+    // =========================================================
+    // UPDATE - CINE
+    // =========================================================
+
+    public boolean actualizarCine(
+            int id,
+            String nombre,
+            String direccion,
+            String ciudad
+    ) {
+
         Optional<Cine> encontrado = buscarPorId(id);
+
         if (encontrado.isEmpty()) {
             return false;
         }
-        // Cine no tiene setters en la versión mínima que te di;
-        // si quieres poder editarlo, agrega setNombre/setDireccion/setCiudad
-        // a la clase Cine. Aquí queda listo el método para cuando los tengas.
+
+        Cine cine = encontrado.get();
+
+        cine.setNombre(nombre);
+        cine.setDireccion(direccion);
+        cine.setCiudad(ciudad);
+
         return true;
     }
 
-    // ---------- DELETE ----------
+    // =========================================================
+    // DELETE - CINE
+    // =========================================================
+
     public boolean eliminarCine(int id) {
-        return cines.removeIf(c -> c.getId() == id);
+
+        return cines.removeIf(
+                cine -> cine.getId() == id
+        );
     }
 
-    public boolean eliminarSala(int idCine, int idSala) {
+    // =========================================================
+    // DELETE - SALA
+    // =========================================================
+
+    public boolean eliminarSala(
+            int idCine,
+            int idSala
+    ) {
+
         Optional<Cine> cine = buscarPorId(idCine);
+
         if (cine.isEmpty()) {
             return false;
         }
-        return cine.get().getSalas().removeIf(s -> s.getId() == idSala);
+
+        return cine.get()
+                .getSalas()
+                .removeIf(sala -> sala.getId() == idSala);
     }
 }
