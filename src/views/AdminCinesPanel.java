@@ -21,6 +21,14 @@ public class AdminCinesPanel extends JPanel {
     private DefaultTableModel modeloTabla;
     private JTable tabla;
 
+    private DefaultTableModel modeloTablaSalas;
+    private JTable tablaSalas;
+
+    // Campos del formulario de sala (atributos para poder rellenarlos al editar)
+    private JTextField campoNombreSala;
+    private JTextField campoCapacidad;
+    private JTextField campoTipoSala;
+
     public AdminCinesPanel(
             MainFrame frame,
             Administrador administrador,
@@ -46,11 +54,47 @@ public class AdminCinesPanel extends JPanel {
             }
         };
         tabla = new JTable(modeloTabla);
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
+
+        modeloTablaSalas = new DefaultTableModel(
+                new Object[]{"ID Sala", "Nombre", "Capacidad", "Tipo"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tablaSalas = new JTable(modeloTablaSalas);
+
+        // Al seleccionar un cine, se cargan sus salas en la tabla de abajo.
+        tabla.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                cargarTablaSalas();
+            }
+        });
+
+        // Al seleccionar una sala, se rellenan los campos del formulario
+        // para poder editarla (esto habilita el UPDATE de salas).
+        tablaSalas.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                cargarCamposSalaSeleccionada();
+            }
+        });
+
+        JPanel panelTablas = new JPanel(new GridLayout(2, 1, 6, 6));
+        panelTablas.add(envolverConTitulo("Cines", tabla));
+        panelTablas.add(envolverConTitulo("Salas del cine seleccionado", tablaSalas));
+        add(panelTablas, BorderLayout.CENTER);
 
         add(construirFormulario(), BorderLayout.SOUTH);
 
         cargarTabla();
+    }
+
+    private JPanel envolverConTitulo(String titulo, JTable tablaAEnvolver) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel(titulo), BorderLayout.NORTH);
+        panel.add(new JScrollPane(tablaAEnvolver), BorderLayout.CENTER);
+        return panel;
     }
 
     private JPanel construirFormulario() {
@@ -60,10 +104,11 @@ public class AdminCinesPanel extends JPanel {
         JTextField campoCiudad = new JTextField();
         JButton btnAgregarCine = new JButton("Agregar cine");
 
-        JTextField campoNombreSala = new JTextField();
-        JTextField campoCapacidad = new JTextField();
-        JTextField campoTipoSala = new JTextField();
+        campoNombreSala = new JTextField();
+        campoCapacidad = new JTextField();
+        campoTipoSala = new JTextField();
         JButton btnAgregarSala = new JButton("Agregar sala al cine seleccionado");
+        JButton btnActualizarSala = new JButton("Actualizar sala seleccionada");
 
         JPanel formCine = new JPanel(new GridLayout(2, 3, 6, 4));
         formCine.add(new JLabel("Nombre cine"));
@@ -129,7 +174,40 @@ public class AdminCinesPanel extends JPanel {
                 campoCapacidad.setText("");
                 campoTipoSala.setText("");
                 cargarTabla();
+                cargarTablaSalas();
             }, () -> JOptionPane.showMessageDialog(this, "El cine seleccionado ya no existe."));
+        });
+
+        btnActualizarSala.addActionListener(e -> {
+            int filaSala = tablaSalas.getSelectedRow();
+            if (filaSala == -1) {
+                JOptionPane.showMessageDialog(this, "Selecciona la sala que quieres actualizar.");
+                return;
+            }
+            int idSala = (int) modeloTablaSalas.getValueAt(filaSala, 0);
+
+            int capacidad;
+            try {
+                capacidad = Integer.parseInt(campoCapacidad.getText().trim());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "La capacidad debe ser un número.");
+                return;
+            }
+
+            String nombreSala = campoNombreSala.getText().trim();
+            String tipoSala = campoTipoSala.getText().trim();
+
+            boolean actualizada = cineController.actualizarSala(idSala, nombreSala, capacidad, tipoSala);
+            if (!actualizada) {
+                JOptionPane.showMessageDialog(this, "No se pudo actualizar la sala. Revisa los datos.");
+                return;
+            }
+
+            JOptionPane.showMessageDialog(this, "Sala actualizada correctamente.");
+            campoNombreSala.setText("");
+            campoCapacidad.setText("");
+            campoTipoSala.setText("");
+            cargarTablaSalas();
         });
 
         JButton btnVolver = new JButton("Volver al panel admin");
@@ -143,7 +221,11 @@ public class AdminCinesPanel extends JPanel {
         sur.add(Box.createVerticalStrut(10));
         sur.add(formSala);
         sur.add(Box.createVerticalStrut(4));
-        sur.add(btnAgregarSala);
+
+        JPanel botonesSala = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        botonesSala.add(btnAgregarSala);
+        botonesSala.add(btnActualizarSala);
+        sur.add(botonesSala);
         sur.add(Box.createVerticalStrut(10));
 
         JPanel botonesFinales = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -173,5 +255,43 @@ public class AdminCinesPanel extends JPanel {
                     c.getId(), c.getNombre(), c.getCiudad(), c.getDireccion(), c.getSalas().size()
             });
         }
+    }
+
+    /**
+     * Recarga la tabla de salas del cine actualmente seleccionado en la tabla de cines.
+     * Se llama al seleccionar un cine, al agregar una sala y al actualizar una sala.
+     */
+    private void cargarTablaSalas() {
+        modeloTablaSalas.setRowCount(0);
+
+        int fila = tabla.getSelectedRow();
+        if (fila == -1) {
+            return;
+        }
+
+        int idCine = (int) modeloTabla.getValueAt(fila, 0);
+
+        cineController.buscarCinePorId(idCine).ifPresent(cine -> {
+            for (Sala s : cine.getSalas()) {
+                modeloTablaSalas.addRow(new Object[]{
+                        s.getId(), s.getNombre(), s.getCapacidad(), s.getTipo()
+                });
+            }
+        });
+    }
+
+    /**
+     * Rellena el formulario de sala con los datos de la sala seleccionada,
+     * para que el usuario pueda modificarlos y luego pulsar "Actualizar sala seleccionada".
+     */
+    private void cargarCamposSalaSeleccionada() {
+        int filaSala = tablaSalas.getSelectedRow();
+        if (filaSala == -1) {
+            return;
+        }
+
+        campoNombreSala.setText(String.valueOf(modeloTablaSalas.getValueAt(filaSala, 1)));
+        campoCapacidad.setText(String.valueOf(modeloTablaSalas.getValueAt(filaSala, 2)));
+        campoTipoSala.setText(String.valueOf(modeloTablaSalas.getValueAt(filaSala, 3)));
     }
 }

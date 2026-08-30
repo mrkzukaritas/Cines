@@ -167,6 +167,44 @@ public class CineService {
     }
 
     // =========================================================
+    // UPDATE - SALA
+    // =========================================================
+
+    public boolean actualizarSala(
+            int idSala,
+            String nombre,
+            int capacidad,
+            String tipo
+    ) throws ValidationException {
+
+        Optional<Sala> encontrada = buscarSalaPorId(idSala);
+
+        if (encontrada.isEmpty()) {
+            return false;
+        }
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new ValidationException(
+                    "El nombre de la sala es obligatorio."
+            );
+        }
+
+        if (capacidad <= 0) {
+            throw new ValidationException(
+                    "La capacidad debe ser mayor a 0."
+            );
+        }
+
+        Sala sala = encontrada.get();
+
+        sala.setNombre(nombre);
+        sala.setCapacidad(capacidad);
+        sala.setTipo(tipo);
+
+        return true;
+    }
+
+    // =========================================================
     // DELETE - CINE
     // =========================================================
 

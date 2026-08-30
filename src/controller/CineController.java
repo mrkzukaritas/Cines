@@ -59,6 +59,20 @@ public class CineController {
         return funcionController.listarPorCine(cine);
     }
 
+    // ---------- UPDATE ----------
+    public boolean actualizarSala(int idSala, String nombre, int capacidad, String tipo) {
+        try {
+            boolean actualizado = cineService.actualizarSala(idSala, nombre, capacidad, tipo);
+            if (!actualizado) {
+                System.out.println(">> No se encontró la sala con id " + idSala);
+            }
+            return actualizado;
+        } catch (ValidationException e) {
+            System.out.println(">> Error al actualizar sala: " + e.getMessage());
+            return false;
+        }
+    }
+
     // ---------- DELETE ----------
     public boolean eliminarCine(int id) {
         boolean eliminado = cineService.eliminarCine(id);
