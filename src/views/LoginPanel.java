@@ -12,8 +12,8 @@ public class LoginPanel extends JPanel {
     private MainFrame frame;
     private LoginController loginController;
 
-    private JTextField txtEmail;
-    private JPasswordField txtPassword;
+    private CampoConIcono campoEmail;
+    private CampoConIcono campoPassword;
 
     public LoginPanel(
             MainFrame frame,
@@ -23,87 +23,56 @@ public class LoginPanel extends JPanel {
         this.frame = frame;
         this.loginController = loginController;
 
-        setLayout(new GridBagLayout());
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        setLayout(new BorderLayout());
+        Estilos.aplicarFondoFormulario(this);
 
         // ==============================
-        // TITULO
+        // HEADER
         // ==============================
 
-        JLabel titulo = new JLabel(
-                "INICIAR SESIÓN",
-                SwingConstants.CENTER
-        );
-
-        titulo.setFont(
-                new Font("Arial", Font.BOLD, 28)
-        );
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-
-        add(titulo, gbc);
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoIniciarSesion.png");
+        add(header, BorderLayout.NORTH);
 
         // ==============================
-        // EMAIL
+        // FORMULARIO
         // ==============================
 
-        gbc.gridwidth = 1;
+        JPanel formulario = new JPanel();
+        formulario.setLayout(new BoxLayout(formulario, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(formulario);
+        formulario.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE,
+                Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        campoEmail = new CampoConIcono("Email", "✉️");
+        campoPassword = new CampoConIcono("Contraseña", "🔒", true);
 
-        add(new JLabel("Email:"), gbc);
+        campoEmail.setAlignmentX(CENTER_ALIGNMENT);
+        campoPassword.setAlignmentX(CENTER_ALIGNMENT);
 
-        txtEmail = new JTextField(20);
+        formulario.add(Box.createVerticalStrut(40));
+        formulario.add(campoEmail);
+        formulario.add(campoPassword);
+        formulario.add(Box.createVerticalGlue());
 
-        gbc.gridx = 1;
-
-        add(txtEmail, gbc);
-
-        // ==============================
-        // PASSWORD
-        // ==============================
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-
-        add(new JLabel("Contraseña:"), gbc);
-
-        txtPassword = new JPasswordField(20);
-
-        gbc.gridx = 1;
-
-        add(txtPassword, gbc);
+        add(formulario, BorderLayout.CENTER);
 
         // ==============================
-        // BOTÓN LOGIN
+        // BOTONES
         // ==============================
 
-        JButton btnLogin =
-                new JButton("Iniciar sesión");
+        BotonRedondeado btnLogin = Estilos.crearBotonPrincipal("Iniciar sesión");
+        BotonRedondeado btnRegistro = Estilos.crearBotonSecundario("Crear cuenta");
 
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        Estilos.aplicarFondoFormulario(panelBotones);
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
 
-        add(btnLogin, gbc);
+        panelBotones.add(btnRegistro);
+        panelBotones.add(btnLogin);
 
-        // ==============================
-        // BOTÓN REGISTRO
-        // ==============================
-
-        JButton btnRegistro =
-                new JButton("Crear cuenta");
-
-        gbc.gridy = 4;
-
-        add(btnRegistro, gbc);
+        add(panelBotones, BorderLayout.SOUTH);
 
         // ==============================
         // EVENTOS
@@ -121,12 +90,10 @@ public class LoginPanel extends JPanel {
     private void iniciarSesion() {
 
         String email =
-                txtEmail.getText().trim();
+                campoEmail.getTexto();
 
         String password =
-                new String(
-                        txtPassword.getPassword()
-                );
+                campoPassword.getTexto();
 
         if (email.isEmpty() || password.isEmpty()) {
 
@@ -154,7 +121,7 @@ public class LoginPanel extends JPanel {
                             usuario.getNombre()
             );
 
-            // MainFrame decide si es Cliente o Administrador
+
             frame.iniciarSesion(usuario);
 
         } catch (Exception e) {

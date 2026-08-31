@@ -12,10 +12,10 @@ public class RegistroPanel extends JPanel {
     private MainFrame frame;
     private LoginController loginController;
 
-    private JTextField txtNombre;
-    private JTextField txtEmail;
-    private JTextField txtTelefono;
-    private JPasswordField txtPassword;
+    private CampoConIcono campoNombre;
+    private CampoConIcono campoEmail;
+    private CampoConIcono campoPassword;
+    private CampoConIcono campoTelefono;
 
     public RegistroPanel(
             MainFrame frame,
@@ -25,206 +25,88 @@ public class RegistroPanel extends JPanel {
         this.frame = frame;
         this.loginController = loginController;
 
-        setLayout(new GridBagLayout());
-
-        GridBagConstraints gbc =
-                new GridBagConstraints();
-
-        gbc.insets =
-                new Insets(8, 8, 8, 8);
-
-        gbc.fill =
-                GridBagConstraints.HORIZONTAL;
+        setLayout(new BorderLayout());
+        Estilos.aplicarFondoFormulario(this);
 
         // ==============================
-        // TITULO
+        // HEADER
         // ==============================
 
-        JLabel titulo =
-                new JLabel(
-                        "CREAR CUENTA",
-                        SwingConstants.CENTER
-                );
-
-        titulo.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        26
-                )
-        );
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-
-        add(titulo, gbc);
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoRegistro.png");
+        add(header, BorderLayout.NORTH);
 
         // ==============================
-        // NOMBRE
+        // FORMULARIO
         // ==============================
 
-        gbc.gridwidth = 1;
+        JPanel formulario = new JPanel();
+        formulario.setLayout(new BoxLayout(formulario, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(formulario);
+        formulario.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE,
+                Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        campoNombre = new CampoConIcono("Nombre","👤");
+        campoEmail = new CampoConIcono("Correo electrónico","✉️");
+        campoPassword = new CampoConIcono("Contraseña","🔒", true);
+        campoTelefono = new CampoConIcono("Teléfono","📱");
 
-        add(
-                new JLabel("Nombre:"),
-                gbc
-        );
+        campoNombre.setAlignmentX(CENTER_ALIGNMENT);
+        campoEmail.setAlignmentX(CENTER_ALIGNMENT);
+        campoPassword.setAlignmentX(CENTER_ALIGNMENT);
+        campoTelefono.setAlignmentX(CENTER_ALIGNMENT);
 
-        txtNombre =
-                new JTextField(20);
+        formulario.add(campoNombre);
+        formulario.add(campoEmail);
+        formulario.add(campoPassword);
+        formulario.add(campoTelefono);
+        formulario.add(Box.createVerticalGlue());
 
-        gbc.gridx = 1;
-
-        add(
-                txtNombre,
-                gbc
-        );
-
-        // ==============================
-        // EMAIL
-        // ==============================
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-
-        add(
-                new JLabel("Email:"),
-                gbc
-        );
-
-        txtEmail =
-                new JTextField(20);
-
-        gbc.gridx = 1;
-
-        add(
-                txtEmail,
-                gbc
-        );
+        add(formulario, BorderLayout.CENTER);
 
         // ==============================
-        // PASSWORD
+        // BOTONES
         // ==============================
 
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        BotonRedondeado btnRegistrar = Estilos.crearBotonPrincipal("Registrarse");
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver al login");
 
-        add(
-                new JLabel("Contraseña:"),
-                gbc
-        );
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        Estilos.aplicarFondoFormulario(panelBotones);
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
 
-        txtPassword =
-                new JPasswordField(20);
+        panelBotones.add(btnVolver);
+        panelBotones.add(btnRegistrar);
 
-        gbc.gridx = 1;
-
-        add(
-                txtPassword,
-                gbc
-        );
-
-        // ==============================
-        // TELEFONO
-        // ==============================
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-
-        add(
-                new JLabel("Teléfono:"),
-                gbc
-        );
-
-        txtTelefono =
-                new JTextField(20);
-
-        gbc.gridx = 1;
-
-        add(
-                txtTelefono,
-                gbc
-        );
-
-        // ==============================
-        // REGISTRAR
-        // ==============================
-
-        JButton btnRegistrar =
-                new JButton("Registrarse");
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 2;
-
-        add(
-                btnRegistrar,
-                gbc
-        );
-
-        // ==============================
-        // VOLVER
-        // ==============================
-
-        JButton btnVolver =
-                new JButton("Volver al login");
-
-        gbc.gridy = 6;
-
-        add(
-                btnVolver,
-                gbc
-        );
+        add(panelBotones, BorderLayout.SOUTH);
 
         // ==============================
         // EVENTOS
         // ==============================
 
-        btnRegistrar.addActionListener(
-                e -> registrar()
-        );
-
-        btnVolver.addActionListener(
-                e -> frame.mostrarLogin()
-        );
+        btnRegistrar.addActionListener(e -> registrar());
+        btnVolver.addActionListener(e -> frame.mostrarLogin());
     }
 
     private void registrar() {
 
-        String nombre =
-                txtNombre.getText().trim();
+        String nombre = campoNombre.getTexto();
+        String email = campoEmail.getTexto();
+        String password = campoPassword.getTexto();
+        String telefono = campoTelefono.getTexto();
 
-        String email =
-                txtEmail.getText().trim();
-
-        String password =
-                new String(
-                        txtPassword.getPassword()
-                );
-
-        String telefono =
-                txtTelefono.getText().trim();
-
-        // ID temporal.
-        // Después podemos manejarlo automáticamente.
-        Cliente cliente =
-                new Cliente(
-                        (int) (Math.random() * 100000),
-                        nombre,
-                        email,
-                        password,
-                        telefono
-                );
+        Cliente cliente = new Cliente(
+                (int) (Math.random() * 100000),
+                nombre,
+                email,
+                password,
+                telefono
+        );
 
         try {
 
-            loginController.manejarRegistro(
-                    cliente
-            );
+            loginController.manejarRegistro(cliente);
 
             JOptionPane.showMessageDialog(
                     this,
@@ -248,9 +130,9 @@ public class RegistroPanel extends JPanel {
 
     private void limpiarCampos() {
 
-        txtNombre.setText("");
-        txtEmail.setText("");
-        txtPassword.setText("");
-        txtTelefono.setText("");
+        campoNombre.setTexto("");
+        campoEmail.setTexto("");
+        campoPassword.setTexto("");
+        campoTelefono.setTexto("");
     }
 }
