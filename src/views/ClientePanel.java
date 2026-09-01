@@ -19,21 +19,22 @@ public class ClientePanel extends JPanel {
         this.cliente = cliente;
 
         setLayout(new BorderLayout(20, 20));
+        Estilos.aplicarFondoFormulario(this);
 
         // =====================================================
-        // TITULO
+        // HEADER
         // =====================================================
 
-        JLabel titulo = new JLabel(
-                "Bienvenido, " + cliente.getNombre(),
-                SwingConstants.CENTER
-        );
+        HeaderPanel header = new HeaderPanel(
+                "src/images/encabezadoCine.png",
+                "Bienvenido, " + cliente.getNombre());
 
-        titulo.setFont(
-                new Font("Arial", Font.BOLD, 28)
-        );
+        add(header, BorderLayout.NORTH);
 
-        add(titulo, BorderLayout.NORTH);
+        JPanel contenido = new JPanel();
+        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(contenido);
+        contenido.setBorder(BorderFactory.createEmptyBorder(Estilos.PADDING_GRANDE,0,0,0));
 
         // =====================================================
         // BOTONES
@@ -42,44 +43,52 @@ public class ClientePanel extends JPanel {
         JPanel botones = new JPanel();
 
         botones.setLayout(
-                new GridLayout(4, 1, 15, 15)
-        );
+                new BoxLayout(botones, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(botones);
 
         botones.setBorder(
                 BorderFactory.createEmptyBorder(
-                        40, 200, 40, 200
-                )
-        );
+                        0, 200,
+                        Estilos.PADDING_GRANDE,200
+                ));
 
         // VER PELICULAS
 
-        JButton btnPeliculas =
-                new JButton("Ver películas");
+        BotonRedondeado btnPeliculas =
+                Estilos.crearBotonPrincipal("Ver películas");
 
         // MIS RESERVAS
 
-        JButton btnReservas =
-                new JButton("Mis reservas");
+        BotonRedondeado btnReservas =
+                Estilos.crearBotonPrincipal("Mis reservas");
 
         // MI PERFIL
 
-        JButton btnPerfil =
-                new JButton("Mi perfil");
+        BotonRedondeado btnPerfil =
+                Estilos.crearBotonPrincipal("Mi perfil");
 
         // CERRAR SESION
 
-        JButton btnCerrarSesion =
-                new JButton("Cerrar sesión");
+        BotonRedondeado btnCerrarSesion =
+                Estilos.crearBotonSecundario("Cerrar sesión");
+
+        for (BotonRedondeado b : new BotonRedondeado[]{
+                btnPeliculas, btnReservas, btnPerfil, btnCerrarSesion}) {
+            b.setAlignmentX(CENTER_ALIGNMENT);
+            b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        }
 
         botones.add(btnPeliculas);
+        botones.add(Box.createVerticalStrut(15));
         botones.add(btnReservas);
+        botones.add(Box.createVerticalStrut(15));
         botones.add(btnPerfil);
+        botones.add(Box.createVerticalStrut(15));
         botones.add(btnCerrarSesion);
 
-        add(
-                botones,
-                BorderLayout.CENTER
-        );
+        contenido.add(botones);
+
+        add(contenido, BorderLayout.CENTER);
 
         // =====================================================
         // EVENTOS
