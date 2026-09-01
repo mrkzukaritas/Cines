@@ -28,21 +28,32 @@ public class ResumenReservaPanel extends JPanel {
         this.reserva = reserva;
 
         setLayout(new BorderLayout(20, 20));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel("Resumen de tu reserva", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 26));
-        add(titulo, BorderLayout.NORTH);
+        // ==========================================
+        // HEADER
+        // ==========================================
+
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoResumen.png");
+        add(header, BorderLayout.NORTH);
 
         add(construirDatos(), BorderLayout.CENTER);
 
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
+        // ==========================================
+        // BOTONES
+        // ==========================================
 
-        JButton btnVolver = new JButton("Volver");
+        JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
+        Estilos.aplicarFondoFormulario(botones);
+
+        botones.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_GRANDE, 0));
+
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver");
         btnVolver.addActionListener(e -> frame.mostrarCliente(cliente));
 
-        JButton btnPagar = new JButton("Pagar");
+        BotonRedondeado btnPagar = Estilos.crearBotonPrincipal("Pagar");
         btnPagar.addActionListener(e -> frame.mostrarPago(cliente, reserva));
-
         botones.add(btnVolver);
         botones.add(btnPagar);
         add(botones, BorderLayout.SOUTH);
@@ -67,39 +78,54 @@ public class ResumenReservaPanel extends JPanel {
                 asientos.append(d.getAsiento().getFila()).append(d.getAsiento().getNumero()).append("  ");
             }
         }
-        if (asientos.length() == 0) {
+        if (asientos.isEmpty()) {
             asientos.append("Sin asientos");
         }
 
-        JPanel datos = new JPanel(new GridLayout(7, 2, 10, 12));
-        datos.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 100));
+        JPanel datos = new JPanel(new GridLayout(7, 2, 10, 18));
+        Estilos.aplicarFondoFormulario(datos);
+        datos.setBorder(BorderFactory.createEmptyBorder(Estilos.PADDING_GRANDE, 150, Estilos.PADDING_GRANDE, 150));
 
-        datos.add(new JLabel("Película:"));
-        datos.add(new JLabel(tituloPelicula));
+        datos.add(crearEtiquetaClave("Película:"));
+        datos.add(crearValor(tituloPelicula));
 
-        datos.add(new JLabel("Cine:"));
-        datos.add(new JLabel(nombreCine));
+        datos.add(crearEtiquetaClave("Cine:"));
+        datos.add(crearValor(nombreCine));
 
-        datos.add(new JLabel("Sala:"));
-        datos.add(new JLabel(nombreSala));
+        datos.add(crearEtiquetaClave("Sala:"));
+        datos.add(crearValor(nombreSala));
 
-        datos.add(new JLabel("Fecha:"));
-        datos.add(new JLabel(fecha));
+        datos.add(crearEtiquetaClave("Fecha:"));
+        datos.add(crearValor(fecha));
 
-        datos.add(new JLabel("Hora:"));
-        datos.add(new JLabel(hora));
+        datos.add(crearEtiquetaClave("Hora:"));
+        datos.add(crearValor(hora));
 
-        datos.add(new JLabel("Asientos:"));
-        datos.add(new JLabel(asientos.toString()));
+        datos.add(crearEtiquetaClave("Asientos:"));
+        datos.add(crearValor(asientos.toString()));
 
-        JLabel labelTotal = new JLabel("Total:");
-        labelTotal.setFont(labelTotal.getFont().deriveFont(Font.BOLD));
-        JLabel valorTotal = new JLabel("$" + reserva.calcularTotal());
-        valorTotal.setFont(valorTotal.getFont().deriveFont(Font.BOLD));
+        JLabel labelTotal = crearEtiquetaClave("Total:");
+        JLabel valorTotal = crearValor("$" + reserva.calcularTotal());
+        valorTotal.setForeground(Estilos.ROJO_PRINCIPAL);
+        valorTotal.setFont(Estilos.FUENTE_TITULO.deriveFont(Font.BOLD, 20f));
 
         datos.add(labelTotal);
         datos.add(valorTotal);
 
         return datos;
+    }
+
+    private JLabel crearEtiquetaClave(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(Estilos.FUENTE_LABEL);
+        label.setForeground(Estilos.GRIS_TEXTO);
+        return label;
+    }
+
+    private JLabel crearValor(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(Estilos.FUENTE_LABEL.deriveFont(Font.BOLD));
+        label.setForeground(Color.DARK_GRAY);
+        return label;
     }
 }

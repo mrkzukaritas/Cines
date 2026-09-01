@@ -44,7 +44,7 @@ public class LoginPanel extends JPanel {
                 Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE,
                 Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
 
-        campoEmail = new CampoConIcono("Email", "✉");
+        campoEmail = new CampoConIcono("Correo electrónico", "✉");
         campoPassword = new CampoConIcono("Contraseña", "🔒", true);
 
         campoEmail.setAlignmentX(CENTER_ALIGNMENT);

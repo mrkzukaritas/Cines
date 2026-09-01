@@ -31,36 +31,65 @@ public class PagoPanel extends JPanel {
         this.pagoController = pagoController;
 
         setLayout(new BorderLayout(20, 20));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel("Método de pago", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 26));
-        add(titulo, BorderLayout.NORTH);
+        // ==========================================
+        // HEADER
+        // ==========================================
+
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoPago.png");
+        add(header, BorderLayout.NORTH);
+
+        // ==========================================
+        // CONTENIDO
+        // ==========================================
 
         JPanel centro = new JPanel(new GridBagLayout());
+        Estilos.aplicarFondoFormulario(centro);
+
         JPanel contenido = new JPanel();
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(contenido);
 
         JLabel labelTotal = new JLabel("Total a pagar: $" + reserva.calcularTotal());
-        labelTotal.setFont(labelTotal.getFont().deriveFont(Font.BOLD, 16f));
+        labelTotal.setFont(Estilos.FUENTE_TITULO.deriveFont(Font.BOLD, 20f));
+        labelTotal.setForeground(Estilos.ROJO_PRINCIPAL);
         labelTotal.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel filaCombo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        filaCombo.add(new JLabel("Selecciona un método:"));
+        JPanel filaCombo = new JPanel(new FlowLayout(FlowLayout.CENTER,12,0));
+        Estilos.aplicarFondoFormulario(filaCombo);
+
+
+        JLabel labelMetodo = new JLabel("Selecciona un método:");
+        labelMetodo.setFont(Estilos.FUENTE_LABEL);
+        labelMetodo.setForeground(Estilos.GRIS_TEXTO);
+
         comboMetodo = new JComboBox<>(new String[]{"Tarjeta", "Efectivo", "PSE"});
+        comboMetodo.setFont(Estilos.FUENTE_CAMPO);
+        comboMetodo.setPreferredSize(new Dimension(160, 32));
+
+        filaCombo.add(labelMetodo);
         filaCombo.add(comboMetodo);
         filaCombo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        contenido.add(Box.createVerticalStrut(20));
+        contenido.add(Box.createVerticalStrut(Estilos.PADDING_GRANDE));
         contenido.add(labelTotal);
-        contenido.add(Box.createVerticalStrut(20));
+        contenido.add(Box.createVerticalStrut(Estilos.PADDING_GRANDE));
         contenido.add(filaCombo);
 
         centro.add(contenido);
         add(centro, BorderLayout.CENTER);
 
+        //BOTONES
+
         JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
-        JButton btnVolver = new JButton("Volver al resumen");
-        JButton btnConfirmar = new JButton("Confirmar pago");
+        Estilos.aplicarFondoFormulario(botones);
+
+        botones.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_GRANDE, 0));
+
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver al resumen");
+        BotonRedondeado btnConfirmar = Estilos.crearBotonPrincipal("Confirmar pago");
 
         btnVolver.addActionListener(e -> frame.mostrarResumen(cliente, reserva));
         btnConfirmar.addActionListener(e -> confirmarPago());

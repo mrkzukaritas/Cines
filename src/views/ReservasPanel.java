@@ -32,20 +32,37 @@ public class ReservasPanel extends JPanel {
         this.reservaController = reservaController;
 
         setLayout(new BorderLayout(10, 10));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel("Mis reservas", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 24));
-        add(titulo, BorderLayout.NORTH);
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoReservas.png");
+        add(header, BorderLayout.NORTH);
 
         listaReservas = new JPanel();
         listaReservas.setLayout(new BoxLayout(listaReservas, BoxLayout.Y_AXIS));
-        add(new JScrollPane(listaReservas), BorderLayout.CENTER);
+        Estilos.aplicarFondoFormulario(listaReservas);
+        listaReservas.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE, 100, Estilos.PADDING_GRANDE, 100));
 
-        JButton btnVolver = new JButton("Volver");
+        JScrollPane scroll = new JScrollPane(listaReservas);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.getViewport().setOpaque(false);
+        scroll.setOpaque(false);
+
+        add(scroll, BorderLayout.CENTER);
+
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver");
         btnVolver.addActionListener(e -> frame.mostrarCliente(cliente));
-        add(btnVolver, BorderLayout.SOUTH);
+
+        JPanel panelVolver = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        Estilos.aplicarFondoFormulario(panelVolver);
+        panelVolver.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_MEDIO, 0));
+        panelVolver.add(btnVolver);
+
+        add(panelVolver, BorderLayout.SOUTH);
 
         cargarReservas();
+
     }
 
     private void cargarReservas() {
@@ -56,13 +73,18 @@ public class ReservasPanel extends JPanel {
 
         if (reservas.isEmpty()) {
             JLabel mensaje = new JLabel("Aún no tienes reservas.");
+            mensaje.setFont(Estilos.FUENTE_LABEL);
+            mensaje.setForeground(Estilos.GRIS_TEXTO);
             mensaje.setAlignmentX(Component.CENTER_ALIGNMENT);
             listaReservas.add(Box.createVerticalStrut(30));
             listaReservas.add(mensaje);
         } else {
             for (Reserva reserva : reservas) {
-                listaReservas.add(crearTarjetaReserva(reserva));
-                listaReservas.add(Box.createVerticalStrut(10));
+                JPanel tarjeta = crearTarjetaReserva(reserva);
+                tarjeta.setAlignmentX(Component.CENTER_ALIGNMENT);
+                tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, tarjeta.getPreferredSize().height));
+                listaReservas.add(tarjeta);
+                listaReservas.add(Box.createVerticalStrut(15));
             }
         }
 
@@ -74,9 +96,10 @@ public class ReservasPanel extends JPanel {
 
         JPanel tarjeta = new JPanel();
         tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+        tarjeta.setBackground(Color.WHITE);
         tarjeta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                BorderFactory.createLineBorder(new Color(225, 218, 205)),
+                BorderFactory.createEmptyBorder(16, 20, 16, 20)
         ));
         tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -97,20 +120,31 @@ public class ReservasPanel extends JPanel {
                 asientos.append(d.getAsiento().getFila()).append(d.getAsiento().getNumero()).append("  ");
             }
         }
-        if (asientos.length() == 0) {
+        if (asientos.isEmpty()) {
             asientos.append("Sin asientos");
         }
 
         JLabel linea1 = new JLabel("Reserva #" + reserva.getId() + " - " + tituloPelicula);
-        linea1.setFont(linea1.getFont().deriveFont(Font.BOLD, 14f));
+        linea1.setFont(Estilos.FUENTE_LABEL.deriveFont(Font.BOLD, 16f));
+        linea1.setForeground(Estilos.ROJO_PRINCIPAL);
 
         JLabel linea2 = new JLabel(nombreCine + " - " + nombreSala + " | " + fechaFuncion + " " + horaFuncion);
+        linea2.setFont(Estilos.FUENTE_CAMPO);
+        linea2.setForeground(Estilos.GRIS_TEXTO);
+
         JLabel linea3 = new JLabel("Asientos: " + asientos);
-        JLabel linea4 = new JLabel("Total: $" + reserva.getTotal() + " | Estado: " + reserva.getEstado());
+        linea3.setFont(Estilos.FUENTE_CAMPO);
+        linea3.setForeground(Estilos.GRIS_TEXTO);
+
+        JLabel linea4 = new JLabel("Total: $" + reserva.getTotal() + "   |   Estado: " + reserva.getEstado());
+        linea4.setFont(Estilos.FUENTE_LABEL);
+        linea4.setForeground(Color.DARK_GRAY);
 
         tarjeta.add(linea1);
+        tarjeta.add(Box.createVerticalStrut(6));
         tarjeta.add(linea2);
         tarjeta.add(linea3);
+        tarjeta.add(Box.createVerticalStrut(6));
         tarjeta.add(linea4);
 
         return tarjeta;

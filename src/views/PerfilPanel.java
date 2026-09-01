@@ -18,27 +18,51 @@ public class PerfilPanel extends JPanel {
         this.cliente = cliente;
 
         setLayout(new BorderLayout(20, 20));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel("Mi perfil", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 28));
-        add(titulo, BorderLayout.NORTH);
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoPerfil.png");
+        add(header, BorderLayout.NORTH);
 
-        JPanel datos = new JPanel(new GridLayout(3, 2, 10, 15));
-        datos.setBorder(BorderFactory.createEmptyBorder(30, 100, 30, 100));
+        JPanel datos = new JPanel(new GridLayout(3, 2, 3, 8));
+        Estilos.aplicarFondoFormulario(datos);
+        datos.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE, 150,
+                Estilos.PADDING_GRANDE, 150));
 
-        datos.add(new JLabel("Nombre:"));
-        datos.add(new JLabel(cliente.getNombre()));
+        datos.add(crearEtiquetaClave("Nombre:"));
+        datos.add(crearValor(cliente.getNombre()));
 
-        datos.add(new JLabel("Email:"));
-        datos.add(new JLabel(cliente.getEmail()));
+        datos.add(crearEtiquetaClave("Correo electrónico:"));
+        datos.add(crearValor(cliente.getEmail()));
 
-        datos.add(new JLabel("Teléfono:"));
-        datos.add(new JLabel(cliente.getTelefono()));
+        datos.add(crearEtiquetaClave("Teléfono:"));
+        datos.add(crearValor(cliente.getTelefono()));
 
         add(datos, BorderLayout.CENTER);
 
-        JButton btnVolver = new JButton("Volver");
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver");
         btnVolver.addActionListener(e -> frame.mostrarCliente(cliente));
-        add(btnVolver, BorderLayout.SOUTH);
+
+        JPanel panelVolver = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        Estilos.aplicarFondoFormulario(panelVolver);
+        panelVolver.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_GRANDE, 0));
+        panelVolver.add(btnVolver);
+
+        add(panelVolver, BorderLayout.SOUTH);
+    }
+
+    private JLabel crearEtiquetaClave(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(Estilos.FUENTE_LABEL.deriveFont(Font.BOLD,18f));
+        label.setForeground(Estilos.ROJO_PRINCIPAL);
+        return label;
+    }
+
+    private JLabel crearValor(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(Estilos.FUENTE_LABEL.deriveFont(Font.BOLD,18f));
+        label.setForeground(Color.DARK_GRAY);
+        return label;
     }
 }

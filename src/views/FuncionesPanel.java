@@ -32,21 +32,16 @@ public class FuncionesPanel extends JPanel {
         this.funcionController = funcionController;
 
         setLayout(new BorderLayout(10, 10));
+        Estilos.aplicarFondoFormulario(this);
 
         // ==========================================
-        // TITULO
+        // HEADER
         // ==========================================
 
-        JLabel titulo = new JLabel(
-                "Funciones de: " + pelicula.getTitulo(),
-                SwingConstants.CENTER
-        );
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoFunciones.png",
+                pelicula.getTitulo());
 
-        titulo.setFont(
-                new Font("Arial", Font.BOLD, 24)
-        );
-
-        add(titulo, BorderLayout.NORTH);
+        add(header, BorderLayout.NORTH);
 
         // ==========================================
         // LISTA DE FUNCIONES
@@ -61,9 +56,16 @@ public class FuncionesPanel extends JPanel {
                 )
         );
 
-        JScrollPane scroll = new JScrollPane(
-                listaFunciones
-        );
+        Estilos.aplicarFondoFormulario(listaFunciones);
+        listaFunciones.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE, 60,
+                Estilos.PADDING_GRANDE, 60
+        ));
+
+        JScrollPane scroll = new JScrollPane(listaFunciones);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.getViewport().setOpaque(false);
+        scroll.setOpaque(false);
 
         add(scroll, BorderLayout.CENTER);
 
@@ -71,15 +73,20 @@ public class FuncionesPanel extends JPanel {
         // BOTON VOLVER
         // ==========================================
 
-        JButton btnVolver =
-                new JButton("Volver a películas");
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver a películas");
 
         btnVolver.addActionListener(e ->
                 frame.mostrarPeliculas(cliente)
         );
 
+        JPanel panelVolver = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        Estilos.aplicarFondoFormulario(panelVolver);
+        panelVolver.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_MEDIO, 0
+        ));
+        panelVolver.add(btnVolver);
         add(
-                btnVolver,
+                panelVolver,
                 BorderLayout.SOUTH
         );
 
@@ -106,6 +113,8 @@ public class FuncionesPanel extends JPanel {
                             "No hay funciones disponibles para esta película."
                     );
 
+            mensaje.setFont(Estilos.FUENTE_LABEL);
+            mensaje.setForeground(Estilos.GRIS_TEXTO);
             mensaje.setAlignmentX(
                     Component.CENTER_ALIGNMENT
             );
@@ -120,12 +129,14 @@ public class FuncionesPanel extends JPanel {
 
             for (Funcion funcion : funciones) {
 
-                listaFunciones.add(
-                        crearTarjetaFuncion(funcion)
-                );
+                JPanel tarjeta = crearTarjetaFuncion(funcion);
+                tarjeta.setAlignmentX(Component.CENTER_ALIGNMENT);
+                tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
+
+                listaFunciones.add(tarjeta);
 
                 listaFunciones.add(
-                        Box.createVerticalStrut(10)
+                        Box.createVerticalStrut(15)
                 );
             }
         }
@@ -144,22 +155,19 @@ public class FuncionesPanel extends JPanel {
 
         JPanel tarjeta =
                 new JPanel(
-                        new GridLayout(1, 5, 10, 10)
+                        new GridLayout(1, 6, 10, 10)
                 );
 
+        tarjeta.setBackground(Color.WHITE);
         tarjeta.setBorder(
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(
-                                Color.GRAY
+                                new Color(225, 218, 205)
                         ),
                         BorderFactory.createEmptyBorder(
-                                10,
-                                10,
-                                10,
-                                10
+                                14, 20, 14, 20
                         )
-                )
-        );
+                ));
 
         // ==========================================
         // CINE
@@ -179,12 +187,7 @@ public class FuncionesPanel extends JPanel {
             }
         }
 
-        JLabel cine =
-                new JLabel(
-                        "<html><b>Cine</b><br>"
-                                + nombreCine
-                                + "</html>"
-                );
+        JLabel cine = crearEtiquetaDato("Cine", nombreCine);
 
         // ==========================================
         // SALA
@@ -195,12 +198,7 @@ public class FuncionesPanel extends JPanel {
                         ? funcion.getSala().getNombre()
                         : "Sin sala";
 
-        JLabel sala =
-                new JLabel(
-                        "<html><b>Sala</b><br>"
-                                + nombreSala
-                                + "</html>"
-                );
+        JLabel sala = crearEtiquetaDato("Sala", nombreSala);
 
         // ==========================================
         // FECHA
@@ -214,30 +212,15 @@ public class FuncionesPanel extends JPanel {
                                 )
                         );
 
-        JLabel fechaLabel =
-                new JLabel(
-                        "<html><b>Fecha</b><br>"
-                                + fecha
-                                + "</html>"
-                );
+        JLabel fechaLabel = crearEtiquetaDato("Fecha", fecha);
 
         // ==========================================
         // HORA Y PRECIO
         // ==========================================
 
-        JLabel hora =
-                new JLabel(
-                        "<html><b>Hora</b><br>"
-                                + funcion.getHoraInicio()
-                                + "</html>"
-                );
+        JLabel hora = crearEtiquetaDato("Hora", String.valueOf(funcion.getHoraInicio()));
 
-        JLabel precio =
-                new JLabel(
-                        "<html><b>Precio</b><br>$"
-                                + funcion.getPrecio()
-                                + "</html>"
-                );
+        JLabel precio = crearEtiquetaDato("Precio", "$" + funcion.getPrecio());
 
         tarjeta.add(cine);
         tarjeta.add(sala);
@@ -249,20 +232,11 @@ public class FuncionesPanel extends JPanel {
         // BOTON
         // ==========================================
 
-        JButton seleccionar =
-                new JButton("Seleccionar");
+        BotonRedondeado seleccionar = Estilos.crearBotonPrincipal("Seleccionar");
 
-        JPanel contenedorBoton =
-                new JPanel(new BorderLayout());
-
-        contenedorBoton.add(
-                seleccionar,
-                BorderLayout.CENTER
-        );
-
-        // Como el GridLayout necesita otro elemento,
-        // agregamos el botón reemplazando el precio
-        tarjeta.remove(precio);
+        JPanel contenedorBoton = new JPanel(new BorderLayout());
+        contenedorBoton.setOpaque(false);
+        contenedorBoton.add(seleccionar, BorderLayout.CENTER);
 
         tarjeta.add(contenedorBoton);
 
@@ -271,6 +245,16 @@ public class FuncionesPanel extends JPanel {
         );
 
         return tarjeta;
+
+    }
+
+    private JLabel crearEtiquetaDato(String titulo, String valor) {
+        JLabel label = new JLabel(
+                "<html><b style='color:#8B1E2B;'>" + titulo + "</b><br>"
+                        + "<span style='color:#333333;'>" + valor + "</span></html>"
+        );
+        label.setFont(Estilos.FUENTE_LABEL);
+        return label;
     }
 
 }

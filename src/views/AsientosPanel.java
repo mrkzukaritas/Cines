@@ -36,25 +36,62 @@ public class AsientosPanel extends JPanel {
         this.reservaController = reservaController;
 
         setLayout(new BorderLayout(10, 10));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel(
-                "Elige tus asientos",
-                SwingConstants.CENTER
-        );
-        titulo.setFont(new Font("Arial", Font.BOLD, 24));
-        add(titulo, BorderLayout.NORTH);
+        // ==========================================
+        // HEADER
+        // ==========================================
+
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoAsientos.png");
+        add(header, BorderLayout.NORTH);
+
+        // ==========================================
+        // GRID DE ASIENTOS
+        // ==========================================
 
         gridAsientos = new JPanel();
-        add(new JScrollPane(gridAsientos), BorderLayout.CENTER);
+        Estilos.aplicarFondoFormulario(gridAsientos);
+
+        JPanel contenidoAsientos = new JPanel();
+        contenidoAsientos.setLayout(new BoxLayout(contenidoAsientos, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(contenidoAsientos);
+        contenidoAsientos.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_CHICO, 0, 0, 0));
+
+        PantallaPanel pantalla = new PantallaPanel();
+        pantalla.setAlignmentX(CENTER_ALIGNMENT);
+
+        gridAsientos.setAlignmentX(CENTER_ALIGNMENT);
+
+        contenidoAsientos.add(pantalla);
+        contenidoAsientos.add(Box.createVerticalStrut(20));
+        contenidoAsientos.add(gridAsientos);
+
+        JScrollPane scroll = new JScrollPane(contenidoAsientos);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.getViewport().setOpaque(false);
+        scroll.setOpaque(false);
+
+        add(scroll, BorderLayout.CENTER);
+
 
         JPanel sur = new JPanel(new BorderLayout(0, 10));
 
+        Estilos.aplicarFondoFormulario(sur);
+        sur.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_MEDIO, 0, Estilos.PADDING_GRANDE, 0));
+
         labelSeleccion = new JLabel("Asientos elegidos: ninguno", SwingConstants.CENTER);
+        labelSeleccion.setFont(Estilos.FUENTE_LABEL);
+        labelSeleccion.setForeground(Estilos.GRIS_TEXTO);
         sur.add(labelSeleccion, BorderLayout.NORTH);
 
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton btnVolver = new JButton("Volver a funciones");
-        JButton btnConfirmar = new JButton("Confirmar selección");
+        JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        Estilos.aplicarFondoFormulario(botones);
+
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver a funciones");
+        BotonRedondeado btnConfirmar = Estilos.crearBotonPrincipal("Confirmar selección");
+
         botones.add(btnVolver);
         botones.add(btnConfirmar);
         sur.add(botones, BorderLayout.SOUTH);
@@ -75,7 +112,9 @@ public class AsientosPanel extends JPanel {
         Sala sala = funcion.getSala();
 
         if (sala == null) {
-            gridAsientos.add(new JLabel("Esta función no tiene sala asignada."));
+            JLabel mensaje = new JLabel("Esta función no tiene sala asignada.");
+            mensaje.setFont(Estilos.FUENTE_LABEL);
+            gridAsientos.add(mensaje);
             return;
         }
 
@@ -90,27 +129,23 @@ public class AsientosPanel extends JPanel {
 
         for (var entrada : porFila.entrySet()) {
 
-            JPanel filaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 4));
+            JPanel filaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 4));
+            filaPanel.setOpaque(false);
 
             for (Asiento asiento : entrada.getValue()) {
 
-                JToggleButton boton = new JToggleButton(
-                        asiento.getFila() + String.valueOf(asiento.getNumero())
-                );
-                boton.setPreferredSize(new Dimension(55, 35));
-
                 boolean ocupado = "OCUPADA".equals(asiento.getEstado());
-                boton.setEnabled(!ocupado);
-                boton.setBackground(ocupado ? new Color(220, 90, 90) : new Color(120, 200, 120));
-                boton.setOpaque(true);
+
+                AsientoBoton boton = new AsientoBoton(
+                        asiento.getFila() + String.valueOf(asiento.getNumero()),
+                        ocupado
+                );
 
                 boton.addActionListener(e -> {
                     if (boton.isSelected()) {
                         seleccionados.add(asiento);
-                        boton.setBackground(new Color(90, 140, 220));
                     } else {
                         seleccionados.remove(asiento);
-                        boton.setBackground(new Color(120, 200, 120));
                     }
                     actualizarLabelSeleccion();
                 });
@@ -119,6 +154,7 @@ public class AsientosPanel extends JPanel {
             }
 
             gridAsientos.add(filaPanel);
+
         }
     }
 
