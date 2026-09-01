@@ -8,6 +8,7 @@ import models.Pelicula;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 public class PeliculasPanel extends JPanel {
 
     private final MainFrame frame;
@@ -37,41 +38,48 @@ public class PeliculasPanel extends JPanel {
     private void construirInterfaz() {
 
         setLayout(new BorderLayout(10, 10));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel(
-                "Películas disponibles",
-                SwingConstants.CENTER
-        );
+        HeaderPanel header = new HeaderPanel(
+                "src/images/encabezadoPeliculas.png");
+        add(header,BorderLayout.NORTH);
 
-        titulo.setFont(
-                new Font("Arial", Font.BOLD, 24)
-        );
-
-        add(titulo, BorderLayout.NORTH);
 
         listaPeliculas = new JPanel();
+        listaPeliculas.setLayout(new WrapLayout
+                (FlowLayout.CENTER, 20, 20));
 
-        listaPeliculas.setLayout(
-                new BoxLayout(
-                        listaPeliculas,
-                        BoxLayout.Y_AXIS
-                )
-        );
+        Estilos.aplicarFondoFormulario(listaPeliculas);
+        listaPeliculas.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE,150,
+                Estilos.PADDING_GRANDE,150
+        ));
 
         JScrollPane scroll =
                 new JScrollPane(listaPeliculas);
 
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.getViewport().setOpaque(false);
+        scroll.setOpaque(false);
+
         add(scroll, BorderLayout.CENTER);
 
-        JButton btnVolver =
-                new JButton("Volver");
+
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver");
 
         btnVolver.addActionListener(e ->
                 frame.mostrarCliente(cliente)
         );
 
-        add(btnVolver, BorderLayout.SOUTH);
+        JPanel panelVolver = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        Estilos.aplicarFondoFormulario(panelVolver);
+        panelVolver.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_MEDIO, 0));
+        panelVolver.add(btnVolver);
+
+        add(panelVolver, BorderLayout.SOUTH);
     }
+
     private void cargarPeliculas() {
 
         listaPeliculas.removeAll();
@@ -84,41 +92,39 @@ public class PeliculasPanel extends JPanel {
             JLabel mensaje =
                     new JLabel("No hay películas disponibles.");
 
+            mensaje.setFont(Estilos.FUENTE_LABEL);
+            mensaje.setForeground(Estilos.GRIS_TEXTO);
+
             mensaje.setAlignmentX(
                     Component.CENTER_ALIGNMENT
             );
 
+            listaPeliculas.add(Box.createVerticalStrut(Estilos.PADDING_GRANDE));
             listaPeliculas.add(mensaje);
 
         } else {
 
             for (Pelicula pelicula : peliculas) {
 
-                JButton boton =
-                        new JButton(
-                                pelicula.getTitulo()
-                        );
-
-                boton.setAlignmentX(
-                        Component.CENTER_ALIGNMENT
+                TarjetaPelicula tarjeta = new TarjetaPelicula(
+                        pelicula.getTitulo(),
+                        pelicula.getRutaImagen()
                 );
 
-                boton.addActionListener(e ->
+                tarjeta.addActionListener(() ->
                         frame.mostrarFunciones(
                                 cliente,
                                 pelicula
                         )
                 );
 
-                listaPeliculas.add(boton);
-
-                listaPeliculas.add(
-                        Box.createVerticalStrut(10)
-                );
+                listaPeliculas.add(tarjeta);
             }
+
         }
 
         listaPeliculas.revalidate();
         listaPeliculas.repaint();
+
     }
 }

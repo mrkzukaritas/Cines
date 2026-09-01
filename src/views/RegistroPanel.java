@@ -47,9 +47,9 @@ public class RegistroPanel extends JPanel {
                 Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
 
         campoNombre = new CampoConIcono("Nombre","👤");
-        campoEmail = new CampoConIcono("Correo electrónico","✉️");
+        campoEmail = new CampoConIcono("Correo electrónico","✉");
         campoPassword = new CampoConIcono("Contraseña","🔒", true);
-        campoTelefono = new CampoConIcono("Teléfono","📱");
+        campoTelefono = new CampoConIcono("Teléfono","\uD83D\uDCDE");
 
         campoNombre.setAlignmentX(CENTER_ALIGNMENT);
         campoEmail.setAlignmentX(CENTER_ALIGNMENT);
