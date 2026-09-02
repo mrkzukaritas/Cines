@@ -73,4 +73,8 @@ public class Cine {
     public void setSalas(List<Sala> salas) {
         this.salas = salas;
     }
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

@@ -61,4 +61,8 @@ public class Pelicula {
     public void setFechaEstreno(LocalDate fechaEstreno) { this.fechaEstreno = fechaEstreno; }
     public String getRutaImagen() { return rutaImagen; }
     public void setRutaImagen(String rutaImagen) { this.rutaImagen = rutaImagen; }
+    @Override
+    public String toString() {
+        return titulo;
+    }
 }

@@ -44,8 +44,10 @@ public class Main {
 
             MainFrame ventana =
                     new MainFrame(loginController);
+            ventana.precargarDatosDemo();
 
             ventana.setVisible(true);
         });
+
     }
 }

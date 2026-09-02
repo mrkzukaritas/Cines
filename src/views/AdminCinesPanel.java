@@ -2,15 +2,12 @@ package views;
 
 import controller.CineController;
 import models.Administrador;
-import models.Asiento;
 import models.Cine;
 import models.Sala;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AdminCinesPanel extends JPanel {
 
@@ -167,8 +164,9 @@ public class AdminCinesPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "No se pudo registrar la sala. Revisa los datos.");
                     return;
                 }
-                // Asientos por defecto (4 filas x 5 columnas) para poder probar reservas.
-                sala.setAsientos(generarAsientos(4, 5));
+                // Genera los asientos respetando la capacidad real ingresada arriba
+                // (antes siempre generaba 4x5=20, sin importar la capacidad).
+                sala.setAsientos(Sala.generarAsientos(capacidad));
 
                 campoNombreSala.setText("");
                 campoCapacidad.setText("");
@@ -233,19 +231,6 @@ public class AdminCinesPanel extends JPanel {
         sur.add(botonesFinales);
 
         return sur;
-    }
-
-    private List<Asiento> generarAsientos(int filas, int porFila) {
-        List<Asiento> asientos = new ArrayList<>();
-        int id = 1;
-        char letra = 'A';
-        for (int f = 0; f < filas; f++) {
-            for (int n = 1; n <= porFila; n++) {
-                asientos.add(new Asiento(id++, String.valueOf(letra), n, "DISPONIBLE"));
-            }
-            letra++;
-        }
-        return asientos;
     }
 
     private void cargarTabla() {

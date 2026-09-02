@@ -84,4 +84,51 @@ public class Sala {
     public List<Funcion> getFunciones() {
         return funciones;
     }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + tipo + ", " + capacidad + " puestos)";
+    }
+
+    /**
+     * Genera automáticamente los asientos de una sala según su capacidad real.
+     * Usa 5 asientos por fila (letras A, B, C...) y crea EXACTAMENTE
+     * "capacidad" asientos, aunque la última fila quede incompleta.
+     *
+     * Ejemplos:
+     *  - capacidad 20 -> filas A a D completas (5 asientos c/u)
+     *  - capacidad 12 -> filas A, B completas (5+5) y C con solo 2 asientos
+     *  - capacidad 7  -> fila A completa (5) y B con 2 asientos
+     *
+     * Es estático porque no depende de una Sala en particular:
+     * cualquier clase puede llamar Sala.generarAsientos(capacidad)
+     * sin necesitar una instancia.
+     */
+    public static List<Asiento> generarAsientos(int capacidad) {
+        return generarAsientos(capacidad, 5);
+    }
+
+    /** Igual que arriba, pero permite elegir cuántos asientos por fila. */
+    public static List<Asiento> generarAsientos(int capacidad, int asientosPorFila) {
+        List<Asiento> asientos = new ArrayList<>();
+
+        if (capacidad <= 0 || asientosPorFila <= 0) {
+            return asientos;
+        }
+
+        int id = 1;
+        char letra = 'A';
+        int creados = 0;
+
+        while (creados < capacidad) {
+            int enEstaFila = Math.min(asientosPorFila, capacidad - creados);
+            for (int n = 1; n <= enEstaFila; n++) {
+                asientos.add(new Asiento(id++, String.valueOf(letra), n, "DISPONIBLE"));
+                creados++;
+            }
+            letra++;
+        }
+
+        return asientos;
+    }
 }

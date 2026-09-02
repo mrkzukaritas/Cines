@@ -14,9 +14,15 @@ import models.Pelicula;
 import models.Reserva;
 import models.Rol;
 import models.Usuario;
+import models.Cine;
+import models.Sala;
+import models.TipoFuncionEnum;
+
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class MainFrame extends JFrame {
 
@@ -51,6 +57,71 @@ public class MainFrame extends JFrame {
     private Cliente clienteActual;
     private Administrador administradorActual;
 
+    // =========================================================
+    // DATOS DE PRUEBA: 2 cines Cinemark + películas + funciones
+    // Se llama desde Main.java, después de crear la ventana.
+    // =========================================================
+
+    public void precargarDatosDemo() {
+
+        // ---- Cine 1: Cinemark Atlantis (Bogotá) ----
+        Cine atlantis = cineController.registrarCine(
+                "Cinemark Atlantis", "Calle 81 No. 13-05", "Bogotá"
+        );
+        Sala salaAtlantis1 = cineController.registrarSala(atlantis, "Sala 1", 20, "2D");
+        Sala salaAtlantis2 = cineController.registrarSala(atlantis, "Sala 2 (VIP)", 12, "VIP");
+        salaAtlantis1.setAsientos(Sala.generarAsientos(salaAtlantis1.getCapacidad()));
+        salaAtlantis2.setAsientos(Sala.generarAsientos(salaAtlantis2.getCapacidad()));
+
+        // ---- Cine 2: Cinemark Floresta (Bogotá, otra dirección) ----
+        Cine floresta = cineController.registrarCine(
+                "Cinemark Floresta", "Avenida Carrera 68 # 90-88", "Bogotá"
+        );
+        Sala salaFloresta1 = cineController.registrarSala(floresta, "Sala 1", 20, "2D");
+        Sala salaFloresta2 = cineController.registrarSala(floresta, "Sala 3D", 18, "3D");
+        salaFloresta1.setAsientos(Sala.generarAsientos(salaFloresta1.getCapacidad()));
+        salaFloresta2.setAsientos(Sala.generarAsientos(salaFloresta2.getCapacidad()));
+
+        // ---- Películas (imágenes de marcador de posición, reales y funcionales) ----
+        Pelicula dune2 = peliculaController.registrarPelicula(
+                "Dune: Parte Dos", "Paul Atreides se une a los Fremen para vengar a su familia.",
+                166, "Ciencia ficción", "PG-13", "Inglés", LocalDate.of(2024, 3, 1),
+                "https://placehold.co/300x450/1a1a2e/fff?text=Dune+Parte+Dos"
+        );
+        Pelicula intensamente2 = peliculaController.registrarPelicula(
+                "Intensamente 2", "Riley enfrenta nuevas emociones en la adolescencia.",
+                96, "Animación", "G", "Inglés", LocalDate.of(2024, 6, 14),
+                "https://placehold.co/300x450/f4a261/fff?text=Intensamente+2"
+        );
+        Pelicula deadpool = peliculaController.registrarPelicula(
+                "Deadpool & Wolverine", "El dúo más caótico del multiverso Marvel.",
+                128, "Acción", "R", "Inglés", LocalDate.of(2024, 7, 26),
+                "https://placehold.co/300x450/8b0000/fff?text=Deadpool+%26+Wolverine"
+        );
+        Pelicula kungfupanda = peliculaController.registrarPelicula(
+                "Kung Fu Panda 4", "Po debe entrenar a un sucesor como Guerrero Dragón.",
+                94, "Animación", "PG", "Inglés", LocalDate.of(2024, 3, 8),
+                "https://placehold.co/300x450/2a9d8f/fff?text=Kung+Fu+Panda+4"
+        );
+        Pelicula ininterrumpida = peliculaController.registrarPelicula(
+                "Un Lugar en Silencio: Día Uno", "El origen de la invasión alienígena en Nueva York.",
+                100, "Terror", "PG-13", "Inglés", LocalDate.of(2024, 6, 28),
+                "https://placehold.co/300x450/222/fff?text=Un+Lugar+en+Silencio"
+        );
+
+        // ---- Funciones: repartidas entre los dos cines ----
+        funcionController.crearFuncion(atlantis, salaAtlantis1, dune2, TipoFuncionEnum.DOBLADA,
+                LocalDate.now(), LocalTime.of(19, 0), LocalTime.of(21, 30), 16000, "2D");
+        funcionController.crearFuncion(atlantis, salaAtlantis2, deadpool, TipoFuncionEnum.SUBTITULADA,
+                LocalDate.now(), LocalTime.of(20, 30), LocalTime.of(22, 40), 22000, "VIP");
+
+        funcionController.crearFuncion(floresta, salaFloresta1, intensamente2, TipoFuncionEnum.DOBLADA,
+                LocalDate.now(), LocalTime.of(16, 0), LocalTime.of(17, 40), 14000, "2D");
+        funcionController.crearFuncion(floresta, salaFloresta2, kungfupanda, TipoFuncionEnum.DOBLADA,
+                LocalDate.now(), LocalTime.of(15, 0), LocalTime.of(16, 40), 18000, "3D");
+        funcionController.crearFuncion(floresta, salaFloresta1, ininterrumpida, TipoFuncionEnum.SUBTITULADA,
+                LocalDate.now().plusDays(1), LocalTime.of(21, 0), LocalTime.of(22, 45), 16000, "2D");
+    }
     // =========================================================
     // NOMBRES DE LOS PANELES
     // =========================================================
