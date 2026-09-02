@@ -73,22 +73,36 @@ public class AdminFuncionesPanel extends JPanel {
         comboPelicula = new JComboBox<>();
         comboTipoFuncion = new JComboBox<>(TipoFuncionEnum.values());
 
+        // ---------- Campo de fecha con selector de calendario ----------
+        // Ya no se escribe a mano: se abre el calendario y se llena solo.
         JTextField campoFecha = new JTextField(LocalDate.now().toString());
+        campoFecha.setEditable(false);
+
+        JButton btnCalendario = new JButton("📅");
+        btnCalendario.setToolTipText("Elegir fecha");
+        btnCalendario.addActionListener(e -> {
+            LocalDate actual;
+            try {
+                actual = LocalDate.parse(campoFecha.getText().trim());
+            } catch (Exception ex) {
+                actual = LocalDate.now();
+            }
+            LocalDate elegida = SelectorFecha.elegirFecha(this, actual);
+            if (elegida != null) {
+                campoFecha.setText(elegida.toString());
+            }
+        });
+
+        JPanel panelFecha = new JPanel(new BorderLayout(4, 0));
+        panelFecha.add(campoFecha, BorderLayout.CENTER);
+        panelFecha.add(btnCalendario, BorderLayout.EAST);
+
         JTextField campoHoraInicio = new JTextField("20:00");
         JTextField campoHoraFin = new JTextField("22:00");
         JTextField campoPrecio = new JTextField();
         JTextField campoFormato = new JTextField("2D");
 
-        comboCine.addActionListener(e -> {
-            comboSala.removeAllItems();
-            Cine cine = (Cine) comboCine.getSelectedItem();
-            if (cine != null) {
-                for (Sala s : cine.getSalas()) {
-                    comboSala.addItem(s);
-                }
-                cargarTabla(cine);
-            }
-        });
+        comboCine.addActionListener(e -> actualizarSalasYTabla());
 
         JPanel form = new JPanel(new GridLayout(2, 5, 6, 4));
         form.add(new JLabel("Cine"));
@@ -103,11 +117,11 @@ public class AdminFuncionesPanel extends JPanel {
         form.add(campoFormato);
 
         JPanel form2 = new JPanel(new GridLayout(2, 4, 6, 4));
-        form2.add(new JLabel("Fecha (AAAA-MM-DD)"));
+        form2.add(new JLabel("Fecha"));
         form2.add(new JLabel("Hora inicio (HH:mm)"));
         form2.add(new JLabel("Hora fin (HH:mm)"));
         form2.add(new JLabel("Precio"));
-        form2.add(campoFecha);
+        form2.add(panelFecha);
         form2.add(campoHoraInicio);
         form2.add(campoHoraFin);
         form2.add(campoPrecio);
@@ -149,7 +163,7 @@ public class AdminFuncionesPanel extends JPanel {
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this,
-                        "Revisa el formato de fecha (AAAA-MM-DD), hora (HH:mm) y precio.\n" + ex.getMessage());
+                        "Revisa el formato de hora (HH:mm) y precio.\n" + ex.getMessage());
             }
         });
 
@@ -184,6 +198,17 @@ public class AdminFuncionesPanel extends JPanel {
         return sur;
     }
 
+    private void actualizarSalasYTabla() {
+        comboSala.removeAllItems();
+        Cine cine = (Cine) comboCine.getSelectedItem();
+        if (cine != null) {
+            for (Sala s : cine.getSalas()) {
+                comboSala.addItem(s);
+            }
+            cargarTabla(cine);
+        }
+    }
+
     private void cargarCombos() {
         comboCine.removeAllItems();
         for (Cine c : cineController.listarCines()) {
@@ -194,6 +219,12 @@ public class AdminFuncionesPanel extends JPanel {
             comboPelicula.addItem(p);
         }
         modeloTabla.setRowCount(0);
+
+        // IMPORTANTE: agregar items a un combo vacío selecciona el primero
+        // automáticamente, pero NO dispara el ActionListener. Por eso hay
+        // que llamar esto a mano, o la tabla de funciones queda vacía
+        // hasta que el usuario cambie de cine manualmente.
+        actualizarSalasYTabla();
     }
 
     private void cargarTabla(Cine cine) {

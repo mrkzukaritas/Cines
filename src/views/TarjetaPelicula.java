@@ -1,7 +1,6 @@
 package views;
 
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -16,6 +15,7 @@ public class TarjetaPelicula extends JPanel {
 
     private final PanelImagenCover panelImagen;
     private Runnable alHacerClick;
+    private Runnable alVerDetalles;
     private boolean hover = false;
 
     public TarjetaPelicula(String titulo, String rutaOUrlImagen) {
@@ -28,8 +28,29 @@ public class TarjetaPelicula extends JPanel {
         // ----- IMAGEN -----
         panelImagen = new PanelImagenCover();
         panelImagen.setPreferredSize(new Dimension(ANCHO, ALTO_IMAGEN));
+        panelImagen.setLayout(new BorderLayout());
         cargarImagenAsync(rutaOUrlImagen);
         add(panelImagen, BorderLayout.NORTH);
+
+        // ----- BOTÓN "VER DETALLES" (esquina superior derecha de la imagen) -----
+        // Va DENTRO de panelImagen, en su propio panel transparente, para que
+        // el clic sobre el botón no dispare el mouseAdapter del click principal.
+        JButton btnInfo = new JButton("i");
+        btnInfo.setFont(Estilos.FUENTE_BOTON.deriveFont(Font.BOLD, 13f));
+        btnInfo.setToolTipText("Ver detalles");
+        btnInfo.setFocusPainted(false);
+        btnInfo.setMargin(new Insets(2, 9, 2, 9));
+        btnInfo.setBackground(new Color(255, 255, 255, 230));
+        btnInfo.setForeground(Estilos.ROJO_PRINCIPAL);
+        btnInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnInfo.addActionListener(e -> {
+            if (alVerDetalles != null) alVerDetalles.run();
+        });
+
+        JPanel wrapperInfo = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 6));
+        wrapperInfo.setOpaque(false);
+        wrapperInfo.add(btnInfo);
+        panelImagen.add(wrapperInfo, BorderLayout.NORTH);
 
         // ----- TITULO -----
         JLabel labelTitulo = new JLabel(titulo.toUpperCase(), SwingConstants.CENTER);
@@ -72,6 +93,11 @@ public class TarjetaPelicula extends JPanel {
         this.alHacerClick = accion;
     }
 
+    /** Se dispara al pulsar el botón "i" (ver detalles), independiente del click principal. */
+    public void addVerDetallesListener(Runnable accion) {
+        this.alVerDetalles = accion;
+    }
+
     private void cargarImagenAsync(String rutaOUrl) {
         if (rutaOUrl == null || rutaOUrl.isBlank()) return;
 
@@ -108,6 +134,10 @@ public class TarjetaPelicula extends JPanel {
     private static class PanelImagenCover extends JPanel {
 
         private Image imagen;
+
+        PanelImagenCover() {
+            setOpaque(false);
+        }
 
         void setImagen(Image imagen) {
             this.imagen = imagen;

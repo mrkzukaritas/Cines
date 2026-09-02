@@ -111,11 +111,18 @@ public class PeliculasPanel extends JPanel {
                         pelicula.getRutaImagen()
                 );
 
+                // Click en la tarjeta -> ver funciones (comportamiento original)
                 tarjeta.addActionListener(() ->
                         frame.mostrarFunciones(
                                 cliente,
                                 pelicula
                         )
+                );
+
+                // Botón "i" -> abre el popup con sinopsis y ficha completa,
+                // sin cerrar ni navegar fuera de esta pantalla.
+                tarjeta.addVerDetallesListener(() ->
+                        DetallePeliculaDialog.mostrar(this, pelicula)
                 );
 
                 listaPeliculas.add(tarjeta);

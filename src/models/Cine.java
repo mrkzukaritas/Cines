@@ -74,7 +74,8 @@ public class Cine {
         this.salas = salas;
     }
     @Override
+
     public String toString() {
-        return nombre;
+        return nombre + " - " + direccion;
     }
 }

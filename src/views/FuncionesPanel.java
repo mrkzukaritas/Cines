@@ -172,23 +172,19 @@ public class FuncionesPanel extends JPanel {
         // ==========================================
         // CINE
         // ==========================================
-
         String nombreCine = "Cine desconocido";
+        String direccionCine = "";
 
         if (funcion.getSala() != null) {
-
-            Cine cine =
-                    funcionController.buscarCineDeSala(
-                            funcion.getSala()
-                    );
-
+            Cine cine = funcionController.buscarCineDeSala(funcion.getSala());
             if (cine != null) {
                 nombreCine = cine.getNombre();
+                direccionCine = cine.getDireccion() != null ? cine.getDireccion() : "";
             }
         }
 
-        JLabel cine = crearEtiquetaDato("Cine", nombreCine);
-
+        String textoCine = direccionCine.isEmpty() ? nombreCine : nombreCine + " - " + direccionCine;
+        JLabel cine = crearEtiquetaDato("Cine / Sede", textoCine);
         // ==========================================
         // SALA
         // ==========================================
