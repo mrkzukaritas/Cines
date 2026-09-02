@@ -6,17 +6,7 @@ import controller.LoginController;
 import controller.PagoController;
 import controller.PeliculaController;
 import controller.ReservaController;
-import models.Administrador;
-import models.CineService;
-import models.Cliente;
-import models.Funcion;
-import models.Pelicula;
-import models.Reserva;
-import models.Rol;
-import models.Usuario;
-import models.Cine;
-import models.Sala;
-import models.TipoFuncionEnum;
+import models.*;
 
 
 import javax.swing.*;
@@ -86,27 +76,27 @@ public class MainFrame extends JFrame {
         Pelicula dune2 = peliculaController.registrarPelicula(
                 "Dune: Parte Dos", "Paul Atreides se une a los Fremen para vengar a su familia.",
                 166, "Ciencia ficción", "PG-13", "Inglés", LocalDate.of(2024, 3, 1),
-                "https://placehold.co/300x450/1a1a2e/fff?text=Dune+Parte+Dos"
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSCCQ15KlAYtueaZGYhHzpBgUQZEhD9ISA-kPihWufslFI9uA-LINyoFU&s=10"
         );
         Pelicula intensamente2 = peliculaController.registrarPelicula(
                 "Intensamente 2", "Riley enfrenta nuevas emociones en la adolescencia.",
                 96, "Animación", "G", "Inglés", LocalDate.of(2024, 6, 14),
-                "https://placehold.co/300x450/f4a261/fff?text=Intensamente+2"
+                "https://lumiere-a.akamaihd.net/v1/images/1_intensamente_2_payoff_banner_pre_1_aa3d9114.png"
         );
         Pelicula deadpool = peliculaController.registrarPelicula(
                 "Deadpool & Wolverine", "El dúo más caótico del multiverso Marvel.",
                 128, "Acción", "R", "Inglés", LocalDate.of(2024, 7, 26),
-                "https://placehold.co/300x450/8b0000/fff?text=Deadpool+%26+Wolverine"
+                "https://lumiere-a.akamaihd.net/v1/images/tidalwave_payoff_poster_las_0a47c6a2.jpeg"
         );
         Pelicula kungfupanda = peliculaController.registrarPelicula(
                 "Kung Fu Panda 4", "Po debe entrenar a un sucesor como Guerrero Dragón.",
                 94, "Animación", "PG", "Inglés", LocalDate.of(2024, 3, 8),
-                "https://placehold.co/300x450/2a9d8f/fff?text=Kung+Fu+Panda+4"
+                "https://static.wikia.nocookie.net/doblaje/images/1/11/Kung_Fu_Panda_4_Poster_Oficial.jpg/revision/latest?cb=20240222161910&path-prefix=es"
         );
         Pelicula ininterrumpida = peliculaController.registrarPelicula(
                 "Un Lugar en Silencio: Día Uno", "El origen de la invasión alienígena en Nueva York.",
                 100, "Terror", "PG-13", "Inglés", LocalDate.of(2024, 6, 28),
-                "https://placehold.co/300x450/222/fff?text=Un+Lugar+en+Silencio"
+                "https://m.media-amazon.com/images/M/MV5BZDExZjJkNWUtMWFkNC00MDZiLThkNTEtMWVmYmQ3OGU3ZmM5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
         );
 
         // ---- Funciones: repartidas entre los dos cines ----
