@@ -38,16 +38,8 @@ public class AsientosPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         Estilos.aplicarFondoFormulario(this);
 
-        // ==========================================
-        // HEADER
-        // ==========================================
-
         HeaderPanel header = new HeaderPanel("src/images/encabezadoAsientos.png");
         add(header, BorderLayout.NORTH);
-
-        // ==========================================
-        // GRID DE ASIENTOS
-        // ==========================================
 
         gridAsientos = new JPanel();
         Estilos.aplicarFondoFormulario(gridAsientos);
@@ -150,6 +142,16 @@ public class AsientosPanel extends JPanel {
                     actualizarLabelSeleccion();
                 });
 
+                asiento.agregarObserver(a -> {
+                    boolean ahoraOcupado = "OCUPADA".equals(a.getEstado());
+                    boton.setEnabled(!ahoraOcupado);
+                    if (ahoraOcupado) {
+                        seleccionados.remove(a);
+                        boton.setSelected(false);
+                        actualizarLabelSeleccion();
+                    }
+                });
+
                 filaPanel.add(boton);
             }
 
@@ -184,7 +186,8 @@ public class AsientosPanel extends JPanel {
 
         Reserva reserva = reservaController.crearReserva(cliente, funcion);
 
-        for (Asiento asiento : seleccionados) {
+        // ConcurrentModificationException.
+        for (Asiento asiento : new ArrayList<>(seleccionados)) {
             boolean agregado = reservaController.agregarAsiento(reserva, asiento);
             if (!agregado) {
                 JOptionPane.showMessageDialog(

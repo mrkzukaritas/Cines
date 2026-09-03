@@ -1,15 +1,15 @@
 package controller;
 
-import models.AuthService;
+import models.IAuthService;
 import models.Usuario;
 import exceptions.ValidationException;
 import exceptions.AutenticacionException;
 
 public class LoginController {
 
-    private final AuthService authService;
+    private final IAuthService authService;
 
-    public LoginController(AuthService authService) {
+    public LoginController(IAuthService authService) {
         this.authService = authService;
     }
 
