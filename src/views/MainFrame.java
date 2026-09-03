@@ -52,7 +52,6 @@ public class MainFrame extends JFrame {
     // DATOS DE PRUEBA: 2 cines Cinemark + películas + funciones
     // Se llama desde Main.java, después de crear la ventana.
     // =========================================================
-
     public void precargarDatosDemo() {
 
         // ---- Cine 1: Cinemark Atlantis (Bogotá) ----
@@ -64,7 +63,7 @@ public class MainFrame extends JFrame {
         salaAtlantis1.setAsientos(Sala.generarAsientos(salaAtlantis1.getCapacidad()));
         salaAtlantis2.setAsientos(Sala.generarAsientos(salaAtlantis2.getCapacidad()));
 
-        // ---- Cine 2: Cinemark Floresta (Bogotá, otra dirección) ----
+        // ---- Cine 2: Cinemark Floresta (Bogotá) ----
         Cine floresta = cineController.registrarCine(
                 "Cinemark Floresta", "Avenida Carrera 68 # 90-88", "Bogotá"
         );
@@ -73,7 +72,18 @@ public class MainFrame extends JFrame {
         salaFloresta1.setAsientos(Sala.generarAsientos(salaFloresta1.getCapacidad()));
         salaFloresta2.setAsientos(Sala.generarAsientos(salaFloresta2.getCapacidad()));
 
-        // ---- Películas (imágenes de marcador de posición, reales y funcionales) ----
+        // ---- Cine 3: Cinemark La Ambalá (Bogotá) ----
+        Cine ambala = cineController.registrarCine(
+                "Cinemark La Ambalá", "Calle 24 # 10-70", "Bogotá"
+        );
+        Sala salaAmbala1 = cineController.registrarSala(ambala, "Sala 1", 22, "2D");
+        Sala salaAmbala2 = cineController.registrarSala(ambala, "Sala Premium", 14, "VIP");
+        Sala salaAmbala3 = cineController.registrarSala(ambala, "Sala 3D", 16, "3D");
+        salaAmbala1.setAsientos(Sala.generarAsientos(salaAmbala1.getCapacidad()));
+        salaAmbala2.setAsientos(Sala.generarAsientos(salaAmbala2.getCapacidad()));
+        salaAmbala3.setAsientos(Sala.generarAsientos(salaAmbala3.getCapacidad()));
+
+        // ---- Películas (imágenes de marcador de posición) ----
         Pelicula dune2 = peliculaController.registrarPelicula(
                 "Dune: Parte Dos", "Paul Atreides se une a los Fremen para vengar a su familia.",
                 166, "Ciencia ficción", "PG-13", "Inglés", LocalDate.of(2024, 3, 1),
@@ -92,26 +102,54 @@ public class MainFrame extends JFrame {
         Pelicula kungfupanda = peliculaController.registrarPelicula(
                 "Kung Fu Panda 4", "Po debe entrenar a un sucesor como Guerrero Dragón.",
                 94, "Animación", "PG", "Inglés", LocalDate.of(2024, 3, 8),
-                "https://static.wikia.nocookie.net/doblaje/images/1/11/Kung_Fu_Panda_4_Poster_Oficial.jpg/revision/latest?cb=20240222161910&path-prefix=es"
+                "https://m.media-amazon.com/images/M/MV5BNmYwOGM5Y2MtYmU5NS00YjdlLWJjMDctYmYyZWUyNjI0ODNmXkEyXkFqcGc@._V1_.jpg"
         );
         Pelicula ininterrumpida = peliculaController.registrarPelicula(
                 "Un Lugar en Silencio: Día Uno", "El origen de la invasión alienígena en Nueva York.",
                 100, "Terror", "PG-13", "Inglés", LocalDate.of(2024, 6, 28),
                 "https://m.media-amazon.com/images/M/MV5BZDExZjJkNWUtMWFkNC00MDZiLThkNTEtMWVmYmQ3OGU3ZmM5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
         );
+        Pelicula beetlejuice = peliculaController.registrarPelicula(
+                "Beetlejuice Beetlejuice", "El fantasma más travieso regresa con más caos.",
+                104, "Comedia", "PG-13", "Inglés", LocalDate.of(2024, 9, 6),
+                "https://i.pinimg.com/736x/a8/fb/e6/a8fbe6c5c8afb995c11c03095296bac9.jpg"
+        );
+        Pelicula venom = peliculaController.registrarPelicula(
+                "Venom: El Último Baile", "Eddie y Venom enfrentan su mayor amenaza.",
+                120, "Acción", "PG-13", "Inglés", LocalDate.of(2024, 10, 25),
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGXnOCeSiW2Sx6D6XZ8qixs3b5YQdN8T_zfE9ldYmLstJsAA1wD9BKgo&s=10"
+        );
 
-        // ---- Funciones: repartidas entre los dos cines ----
+        // ---- Funciones: repartidas entre los tres cines ----
+        // Atlantis
         funcionController.crearFuncion(atlantis, salaAtlantis1, dune2, TipoFuncionEnum.DOBLADA,
                 LocalDate.now(), LocalTime.of(19, 0), LocalTime.of(21, 30), 16000, "2D");
         funcionController.crearFuncion(atlantis, salaAtlantis2, deadpool, TipoFuncionEnum.SUBTITULADA,
                 LocalDate.now(), LocalTime.of(20, 30), LocalTime.of(22, 40), 22000, "VIP");
+        funcionController.crearFuncion(atlantis, salaAtlantis1, venom, TipoFuncionEnum.SUBTITULADA,
+                LocalDate.now().plusDays(1), LocalTime.of(18, 0), LocalTime.of(20, 0), 17000, "2D");
 
+        // Floresta
         funcionController.crearFuncion(floresta, salaFloresta1, intensamente2, TipoFuncionEnum.DOBLADA,
                 LocalDate.now(), LocalTime.of(16, 0), LocalTime.of(17, 40), 14000, "2D");
         funcionController.crearFuncion(floresta, salaFloresta2, kungfupanda, TipoFuncionEnum.DOBLADA,
                 LocalDate.now(), LocalTime.of(15, 0), LocalTime.of(16, 40), 18000, "3D");
         funcionController.crearFuncion(floresta, salaFloresta1, ininterrumpida, TipoFuncionEnum.SUBTITULADA,
                 LocalDate.now().plusDays(1), LocalTime.of(21, 0), LocalTime.of(22, 45), 16000, "2D");
+        funcionController.crearFuncion(floresta, salaFloresta2, beetlejuice, TipoFuncionEnum.SUBTITULADA,
+                LocalDate.now().plusDays(2), LocalTime.of(19, 30), LocalTime.of(21, 15), 20000, "3D");
+
+        // La Ambalá
+        funcionController.crearFuncion(ambala, salaAmbala1, dune2, TipoFuncionEnum.SUBTITULADA,
+                LocalDate.now().plusDays(1), LocalTime.of(17, 0), LocalTime.of(19, 30), 15000, "2D");
+        funcionController.crearFuncion(ambala, salaAmbala2, deadpool, TipoFuncionEnum.DOBLADA,
+                LocalDate.now().plusDays(1), LocalTime.of(20, 0), LocalTime.of(22, 10), 23000, "VIP");
+        funcionController.crearFuncion(ambala, salaAmbala3, intensamente2, TipoFuncionEnum.DOBLADA,
+                LocalDate.now().plusDays(2), LocalTime.of(14, 0), LocalTime.of(15, 40), 19000, "3D");
+        funcionController.crearFuncion(ambala, salaAmbala1, venom, TipoFuncionEnum.SUBTITULADA,
+                LocalDate.now().plusDays(2), LocalTime.of(21, 0), LocalTime.of(23, 0), 16000, "2D");
+        funcionController.crearFuncion(ambala, salaAmbala3, beetlejuice, TipoFuncionEnum.DOBLADA,
+                LocalDate.now().plusDays(3), LocalTime.of(16, 30), LocalTime.of(18, 15), 20000, "3D");
     }
     // =========================================================
     // NOMBRES DE LOS PANELES
