@@ -4,19 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import exceptions.ValidationException;
 import exceptions.AutenticacionException;
-/**
- * SERVICE (capa intermedia entre Controller y Model)
- *
- * No aparece en el diagrama de clases UML, pero en la práctica
- * es donde se coloca la lógica de:
- *   - Registrar usuarios (validando antes de guardar)
- *   - Iniciar sesión (verificar credenciales)
- *
- * Aquí simulamos una "base de datos" con una lista en memoria.
- * En un proyecto real, esto llamaría a un Repository/DAO conectado
- * a una base de datos real.
- */
-public class AuthService {
+
+public class AuthService implements IAuthService {
 
     private List<Usuario> usuarios = new ArrayList<>();
 
@@ -37,7 +26,6 @@ public class AuthService {
         usuarios.add(nuevoUsuario);
         nuevoUsuario.registrarse(); // ejecuta la versión de Cliente o Administrador
     }
-
     /**
      * Verifica credenciales y devuelve el Usuario autenticado.
      * El Controller usará usuario.getRol() para decidir qué hacer,
