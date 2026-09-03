@@ -64,14 +64,18 @@ public class AdminPanel extends JPanel {
         btnFunciones.addActionListener(e -> frame.mostrarAdminFunciones(administrador));
 
         btnCerrarSesion.addActionListener(e -> {
-            int opcion = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Está seguro de cerrar sesión?",
-                    "Cerrar sesión",
-                    JOptionPane.YES_NO_OPTION
-            );
-            if (opcion == JOptionPane.YES_OPTION) {
+
+            boolean confirmar =
+                    DialogoEstilizado.confirmar(
+                            this,
+                            "Cerrar sesión",
+                            "¿Está seguro de cerrar sesión?"
+                    );
+
+            if (confirmar) {
+
                 administrador.cerrarSesion();
+
                 frame.mostrarLogin();
             }
         });
