@@ -15,28 +15,49 @@ public class AdminPanel extends JPanel {
         this.administrador = administrador;
 
         setLayout(new BorderLayout(20, 20));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel(
-                "Panel administrador - " + administrador.getNombre(),
-                SwingConstants.CENTER
-        );
-        titulo.setFont(new Font("Arial", Font.BOLD, 26));
-        add(titulo, BorderLayout.NORTH);
+        // ==========================================
+        // HEADER
+        // ==========================================
 
-        JPanel botones = new JPanel(new GridLayout(4, 1, 15, 15));
-        botones.setBorder(BorderFactory.createEmptyBorder(40, 200, 40, 200));
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoAdmin.png");
+        add(header, BorderLayout.NORTH);
 
-        JButton btnPeliculas = new JButton("Gestionar películas");
-        JButton btnCines = new JButton("Gestionar cines y salas");
-        JButton btnFunciones = new JButton("Gestionar funciones");
-        JButton btnCerrarSesion = new JButton("Cerrar sesión");
+        // ==========================================
+        // BOTONES
+        // ==========================================
+
+        JPanel botones = new JPanel();
+        botones.setLayout(new BoxLayout(botones, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(botones);
+        botones.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE, 200, Estilos.PADDING_GRANDE, 200));
+
+        BotonRedondeado btnPeliculas = Estilos.crearBotonPrincipal("Gestionar películas");
+        BotonRedondeado btnCines = Estilos.crearBotonPrincipal("Gestionar cines y salas");
+        BotonRedondeado btnFunciones = Estilos.crearBotonPrincipal("Gestionar funciones");
+        BotonRedondeado btnCerrarSesion = Estilos.crearBotonSecundario("Cerrar sesión");
+
+        for (BotonRedondeado b : new BotonRedondeado[]{
+                btnPeliculas, btnCines, btnFunciones, btnCerrarSesion}) {
+            b.setAlignmentX(CENTER_ALIGNMENT);
+            b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        }
 
         botones.add(btnPeliculas);
+        botones.add(Box.createVerticalStrut(15));
         botones.add(btnCines);
+        botones.add(Box.createVerticalStrut(15));
         botones.add(btnFunciones);
+        botones.add(Box.createVerticalStrut(15));
         botones.add(btnCerrarSesion);
 
         add(botones, BorderLayout.CENTER);
+
+        // ==========================================
+        // EVENTOS
+        // ==========================================
 
         btnPeliculas.addActionListener(e -> frame.mostrarAdminPeliculas(administrador));
         btnCines.addActionListener(e -> frame.mostrarAdminCines(administrador));

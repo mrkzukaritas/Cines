@@ -107,25 +107,23 @@ public class PagoPanel extends JPanel {
         Pago pago = pagoController.procesarPago(reserva, metodoPago);
 
         if (pago == null) {
-            JOptionPane.showMessageDialog(
+            DialogoEstilizado.mostrarError(
                     this,
-                    "No se pudo procesar el pago. Verifica que la reserva tenga asientos\ny que el método de pago sea válido.",
                     "Error de pago",
-                    JOptionPane.ERROR_MESSAGE
+                    "No se pudo procesar el pago. Verifica que la reserva tenga asientos\ny que el método de pago sea válido."
             );
             return;
         }
 
-        JOptionPane.showMessageDialog(
+        DialogoEstilizado.mostrarExito(
                 this,
+                "Reserva confirmada",
                 "¡Pago aprobado!\n"
                         + "Pago #" + pago.getId() + "\n"
                         + "Monto: $" + pago.getMonto() + "\n"
                         + "Fecha: " + pago.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + "\n"
                         + "Método: " + metodoPago.getTipo() + "\n\n"
-                        + "Reserva #" + reserva.getId() + " confirmada.",
-                "Reserva confirmada",
-                JOptionPane.INFORMATION_MESSAGE
+                        + "Reserva #" + reserva.getId() + " confirmada."
         );
 
         frame.mostrarCliente(cliente);

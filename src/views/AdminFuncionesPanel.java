@@ -7,6 +7,7 @@ import models.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -44,11 +45,15 @@ public class AdminFuncionesPanel extends JPanel {
         this.funcionController = funcionController;
 
         setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        Estilos.aplicarFondoFormulario(this);
 
-        JLabel titulo = new JLabel("Gestionar funciones", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 22));
-        add(titulo, BorderLayout.NORTH);
+        // ==========================================
+        // HEADER
+        // ==========================================
+
+        HeaderPanel header = new HeaderPanel("src/images/encabezadoGFunciones.png");
+        header.setPreferredSize(new Dimension(0, 90));
+        add(header, BorderLayout.NORTH);
 
         modeloTabla = new DefaultTableModel(
                 new Object[]{"ID", "Película", "Sala", "Fecha", "Hora", "Precio"}, 0
@@ -59,11 +64,45 @@ public class AdminFuncionesPanel extends JPanel {
             }
         };
         tabla = new JTable(modeloTabla);
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
+        estilizarTabla(tabla);
+
+        JScrollPane scroll = new JScrollPane(tabla);
+        scroll.setBorder(BorderFactory.createLineBorder(new Color(230, 224, 210)));
+        scroll.setPreferredSize(new Dimension(0, 200));
+
+        JPanel panelTabla = new JPanel(new BorderLayout());
+        Estilos.aplicarFondoFormulario(panelTabla);
+        panelTabla.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_MEDIO, Estilos.PADDING_MEDIO, 0, Estilos.PADDING_MEDIO));
+
+        JLabel labelTabla = new JLabel("Funciones del cine seleccionado");
+        labelTabla.setFont(Estilos.FUENTE_LABEL);
+        labelTabla.setForeground(Estilos.ROJO_PRINCIPAL);
+        labelTabla.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
+
+        panelTabla.add(labelTabla, BorderLayout.NORTH);
+        panelTabla.add(scroll, BorderLayout.CENTER);
+
+        add(panelTabla, BorderLayout.CENTER);
 
         add(construirFormulario(), BorderLayout.SOUTH);
 
         cargarCombos();
+    }
+
+    private void estilizarTabla(JTable t) {
+        t.setRowHeight(28);
+        t.setFont(Estilos.FUENTE_CAMPO);
+        t.setGridColor(new Color(230, 224, 210));
+        t.setSelectionBackground(new Color(240, 210, 210));
+        t.setSelectionForeground(Color.DARK_GRAY);
+        t.setShowGrid(true);
+
+        JTableHeader encabezadoTabla = t.getTableHeader();
+        encabezadoTabla.setFont(Estilos.FUENTE_LABEL);
+        encabezadoTabla.setBackground(Estilos.ROJO_PRINCIPAL);
+        encabezadoTabla.setForeground(Color.WHITE);
+        encabezadoTabla.setPreferredSize(new Dimension(0, 32));
     }
 
     private JPanel construirFormulario() {
@@ -72,9 +111,12 @@ public class AdminFuncionesPanel extends JPanel {
         comboSala = new JComboBox<>();
         comboPelicula = new JComboBox<>();
         comboTipoFuncion = new JComboBox<>(TipoFuncionEnum.values());
+        estilizarCombo(comboCine);
+        estilizarCombo(comboSala);
+        estilizarCombo(comboPelicula);
+        estilizarCombo(comboTipoFuncion);
 
         // ---------- Campo de fecha con selector de calendario ----------
-        // Ya no se escribe a mano: se abre el calendario y se llena solo.
         JTextField campoFecha = new JTextField(LocalDate.now().toString());
         campoFecha.setEditable(false);
 
@@ -94,6 +136,7 @@ public class AdminFuncionesPanel extends JPanel {
         });
 
         JPanel panelFecha = new JPanel(new BorderLayout(4, 0));
+        panelFecha.setOpaque(false);
         panelFecha.add(campoFecha, BorderLayout.CENTER);
         panelFecha.add(btnCalendario, BorderLayout.EAST);
 
@@ -104,7 +147,8 @@ public class AdminFuncionesPanel extends JPanel {
 
         comboCine.addActionListener(e -> actualizarSalasYTabla());
 
-        JPanel form = new JPanel(new GridLayout(2, 5, 6, 4));
+        JPanel form = new JPanel(new GridLayout(2, 5, 10, 4));
+        Estilos.aplicarFondoFormulario(form);
         form.add(new JLabel("Cine"));
         form.add(new JLabel("Sala"));
         form.add(new JLabel("Película"));
@@ -116,7 +160,8 @@ public class AdminFuncionesPanel extends JPanel {
         form.add(comboTipoFuncion);
         form.add(campoFormato);
 
-        JPanel form2 = new JPanel(new GridLayout(2, 4, 6, 4));
+        JPanel form2 = new JPanel(new GridLayout(2, 4, 10, 4));
+        Estilos.aplicarFondoFormulario(form2);
         form2.add(new JLabel("Fecha"));
         form2.add(new JLabel("Hora inicio (HH:mm)"));
         form2.add(new JLabel("Hora fin (HH:mm)"));
@@ -126,9 +171,9 @@ public class AdminFuncionesPanel extends JPanel {
         form2.add(campoHoraFin);
         form2.add(campoPrecio);
 
-        JButton btnCrear = new JButton("Crear función");
-        JButton btnCancelarFuncion = new JButton("Cancelar seleccionada");
-        JButton btnVolver = new JButton("Volver al panel admin");
+        BotonRedondeado btnCrear = Estilos.crearBotonPrincipal("Crear función");
+        BotonRedondeado btnCancelarFuncion = Estilos.crearBotonSecundario("Cancelar seleccionada");
+        BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver al panel admin");
 
         btnCrear.addActionListener(e -> {
             Cine cine = (Cine) comboCine.getSelectedItem();
@@ -170,7 +215,7 @@ public class AdminFuncionesPanel extends JPanel {
         btnCancelarFuncion.addActionListener(e -> {
             int fila = tabla.getSelectedRow();
             if (fila == -1) {
-                JOptionPane.showMessageDialog(this, "Selecciona una función primero.");
+                DialogoEstilizado.mostrarAdvertencia(this, "Falta seleccionar", "Selecciona una función primero.");
                 return;
             }
             int id = (int) modeloTabla.getValueAt(fila, 0);
@@ -186,16 +231,48 @@ public class AdminFuncionesPanel extends JPanel {
 
         JPanel sur = new JPanel();
         sur.setLayout(new BoxLayout(sur, BoxLayout.Y_AXIS));
-        sur.add(form);
-        sur.add(form2);
+        Estilos.aplicarFondoFormulario(sur);
+        sur.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        sur.add(form);
+        sur.add(Box.createVerticalStrut(6));
+        sur.add(form2);
+        sur.add(Box.createVerticalStrut(10));
+
+        JPanel botones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        Estilos.aplicarFondoFormulario(botones);
         botones.add(btnVolver);
         botones.add(btnCancelarFuncion);
         botones.add(btnCrear);
         sur.add(botones);
 
         return sur;
+    }
+
+    private JTextField crearCampoTexto(String valorInicial) {
+        JTextField campo = new JTextField(valorInicial);
+        campo.setFont(Estilos.FUENTE_CAMPO.deriveFont(15f));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 2, 0, Estilos.ROJO_PRINCIPAL),
+                BorderFactory.createEmptyBorder(4, 4, 4, 4)
+        ));
+        campo.setOpaque(false);
+        return campo;
+    }
+
+    private void estilizarCombo(JComboBox<?> combo) {
+        combo.setFont(Estilos.FUENTE_CAMPO.deriveFont(15f));
+        combo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 2, 0, Estilos.ROJO_PRINCIPAL),
+                BorderFactory.createEmptyBorder(2, 4, 2, 4)
+        ));
+    }
+
+    private JLabel crearEtiquetaFormulario(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(Estilos.FUENTE_LABEL.deriveFont(Font.BOLD, 14f));
+        label.setForeground(Estilos.ROJO_PRINCIPAL);
+        return label;
     }
 
     private void actualizarSalasYTabla() {
