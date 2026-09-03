@@ -1,6 +1,8 @@
 package views;
 
+import controller.PerfilController;
 import models.Cliente;
+import exceptions.ValidationException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +11,12 @@ public class PerfilPanel extends JPanel {
 
     private final MainFrame frame;
     private final Cliente cliente;
+    private final PerfilController controller;
+
+    private CampoConIcono campoNombre;
+    private CampoConIcono campoEmail;
+    private CampoConIcono campoPassword;
+    private CampoConIcono campoTelefono;
 
     public PerfilPanel(
             MainFrame frame,
@@ -16,53 +24,104 @@ public class PerfilPanel extends JPanel {
     ) {
         this.frame = frame;
         this.cliente = cliente;
+        this.controller = new PerfilController(frame.getLoginController());
 
-        setLayout(new BorderLayout(20, 20));
+        setLayout(new BorderLayout());
         Estilos.aplicarFondoFormulario(this);
+
+        // ==============================
+        // HEADER
+        // ==============================
 
         HeaderPanel header = new HeaderPanel("src/images/encabezadoPerfil.png");
         add(header, BorderLayout.NORTH);
 
-        JPanel datos = new JPanel(new GridLayout(3, 2, 3, 8));
-        Estilos.aplicarFondoFormulario(datos);
-        datos.setBorder(BorderFactory.createEmptyBorder(
-                Estilos.PADDING_GRANDE, 150,
-                Estilos.PADDING_GRANDE, 150));
+        // ==============================
+        // FORMULARIO
+        // ==============================
 
-        datos.add(crearEtiquetaClave("Nombre:"));
-        datos.add(crearValor(cliente.getNombre()));
+        JPanel formulario = new JPanel();
+        formulario.setLayout(new BoxLayout(formulario, BoxLayout.Y_AXIS));
+        Estilos.aplicarFondoFormulario(formulario);
+        formulario.setBorder(BorderFactory.createEmptyBorder(
+                Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE,
+                Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
 
-        datos.add(crearEtiquetaClave("Correo electrónico:"));
-        datos.add(crearValor(cliente.getEmail()));
+        campoNombre = new CampoConIcono("Nombre", "👤");
+        campoEmail = new CampoConIcono("Correo electrónico", "✉");
+        campoPassword = new CampoConIcono("Contraseña", "🔒", true);
+        campoTelefono = new CampoConIcono("Teléfono", "\uD83D\uDCDE");
 
-        datos.add(crearEtiquetaClave("Teléfono:"));
-        datos.add(crearValor(cliente.getTelefono()));
+        campoNombre.setTexto(cliente.getNombre());
+        campoEmail.setTexto(cliente.getEmail());
+        campoPassword.setTexto(cliente.getPassword());
+        campoTelefono.setTexto(cliente.getTelefono());
 
-        add(datos, BorderLayout.CENTER);
+        campoEmail.getCampoInterno().setEditable(false);
 
+        campoNombre.setAlignmentX(CENTER_ALIGNMENT);
+        campoEmail.setAlignmentX(CENTER_ALIGNMENT);
+        campoPassword.setAlignmentX(CENTER_ALIGNMENT);
+        campoTelefono.setAlignmentX(CENTER_ALIGNMENT);
+
+        formulario.add(campoNombre);
+        formulario.add(campoEmail);
+        formulario.add(campoPassword);
+        formulario.add(campoTelefono);
+        formulario.add(Box.createVerticalGlue());
+
+        add(formulario, BorderLayout.CENTER);
+
+        // ==============================
+        // BOTONES
+        // ==============================
+
+        BotonRedondeado btnGuardar = Estilos.crearBotonPrincipal("Guardar cambios");
         BotonRedondeado btnVolver = Estilos.crearBotonSecundario("Volver");
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        Estilos.aplicarFondoFormulario(panelBotones);
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(
+                0, 0, Estilos.PADDING_GRANDE, Estilos.PADDING_GRANDE));
+
+        panelBotones.add(btnVolver);
+        panelBotones.add(btnGuardar);
+
+        add(panelBotones, BorderLayout.SOUTH);
+
+        // ==============================
+        // EVENTOS
+        // ==============================
+
+        btnGuardar.addActionListener(e -> guardarCambios());
         btnVolver.addActionListener(e -> frame.mostrarCliente(cliente));
-
-        JPanel panelVolver = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        Estilos.aplicarFondoFormulario(panelVolver);
-        panelVolver.setBorder(BorderFactory.createEmptyBorder(
-                0, 0, Estilos.PADDING_GRANDE, 0));
-        panelVolver.add(btnVolver);
-
-        add(panelVolver, BorderLayout.SOUTH);
     }
 
-    private JLabel crearEtiquetaClave(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(Estilos.FUENTE_LABEL.deriveFont(Font.BOLD,18f));
-        label.setForeground(Estilos.ROJO_PRINCIPAL);
-        return label;
-    }
+    private void guardarCambios() {
 
-    private JLabel crearValor(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(Estilos.FUENTE_LABEL.deriveFont(Font.BOLD,18f));
-        label.setForeground(Color.DARK_GRAY);
-        return label;
+        String nombre = campoNombre.getTexto();
+        String telefono = campoTelefono.getTexto();
+        String password = campoPassword.getTexto();
+
+        try {
+
+            controller.guardarCambios(cliente, nombre, telefono, password);
+
+            DialogoEstilizado.mostrarExito(
+                    this,
+                    "Perfil actualizado",
+                    "Tus datos se actualizaron correctamente."
+            );
+
+            frame.mostrarPerfil(cliente);
+
+        } catch (ValidationException e) {
+
+            DialogoEstilizado.mostrarError(
+                    this,
+                    "Error de validación",
+                    e.getMessage()
+            );
+        }
     }
 }

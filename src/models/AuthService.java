@@ -47,4 +47,17 @@ public class AuthService implements IAuthService {
     public void agregarUsuarioInicial(Usuario usuario) {
         usuarios.add(usuario);
     }
+
+    @Override
+    public void actualizarPerfil(Usuario usuario, String nombre, String telefono, String password)
+            throws ValidationException {
+
+        UsuarioValidator.validarEdicion(nombre, telefono, password);
+
+        usuario.setNombre(nombre);
+        usuario.setTelefono(telefono);
+        usuario.setPassword(password);
+
+        usuario.actualizarPerfil();
+    }
 }

@@ -108,15 +108,14 @@ public class ClientePanel extends JPanel {
 
         btnCerrarSesion.addActionListener(e -> {
 
-            int opcion =
-                    JOptionPane.showConfirmDialog(
+            boolean confirmar =
+                    DialogoEstilizado.confirmar(
                             this,
-                            "¿Está seguro de cerrar sesión?",
                             "Cerrar sesión",
-                            JOptionPane.YES_NO_OPTION
+                            "¿Está seguro de cerrar sesión?"
                     );
 
-            if (opcion == JOptionPane.YES_OPTION) {
+            if (confirmar) {
 
                 cliente.cerrarSesion();
 

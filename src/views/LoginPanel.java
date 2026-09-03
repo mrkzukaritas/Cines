@@ -89,19 +89,15 @@ public class LoginPanel extends JPanel {
 
     private void iniciarSesion() {
 
-        String email =
-                campoEmail.getTexto();
-
-        String password =
-                campoPassword.getTexto();
+        String email = campoEmail.getTexto();
+        String password = campoPassword.getTexto();
 
         if (email.isEmpty() || password.isEmpty()) {
 
-            JOptionPane.showMessageDialog(
+            DialogoEstilizado.mostrarAdvertencia(
                     this,
-                    "Complete todos los campos.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+                    "Campos incompletos",
+                    "Complete todos los campos."
             );
 
             return;
@@ -109,28 +105,22 @@ public class LoginPanel extends JPanel {
 
         try {
 
-            Usuario usuario =
-                    loginController.manejarLogin(
-                            email,
-                            password
-                    );
+            Usuario usuario = loginController.manejarLogin(email, password);
 
-            JOptionPane.showMessageDialog(
+            DialogoEstilizado.mostrarExito(
                     this,
-                    "Bienvenido, " +
-                            usuario.getNombre()
+                    "Inicio de sesión exitoso",
+                    "Bienvenido, " + usuario.getNombre()
             );
-
 
             frame.iniciarSesion(usuario);
 
         } catch (Exception e) {
 
-            JOptionPane.showMessageDialog(
+            DialogoEstilizado.mostrarError(
                     this,
-                    e.getMessage(),
                     "Error de autenticación",
-                    JOptionPane.ERROR_MESSAGE
+                    e.getMessage()
             );
         }
     }

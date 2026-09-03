@@ -58,8 +58,8 @@ public class FuncionesPanel extends JPanel {
 
         Estilos.aplicarFondoFormulario(listaFunciones);
         listaFunciones.setBorder(BorderFactory.createEmptyBorder(
-                Estilos.PADDING_GRANDE, 60,
-                Estilos.PADDING_GRANDE, 60
+                Estilos.PADDING_GRANDE, 10,
+                Estilos.PADDING_GRANDE, 10
         ));
 
         JScrollPane scroll = new JScrollPane(listaFunciones);
@@ -149,42 +149,58 @@ public class FuncionesPanel extends JPanel {
     // TARJETA DE FUNCIÓN
     // ==========================================
 
-    private JPanel crearTarjetaFuncion(
-            Funcion funcion
-    ) {
+    private JPanel crearTarjetaFuncion(Funcion funcion) {
 
-        JPanel tarjeta =
-                new JPanel(
-                        new GridLayout(1, 6, 10, 10)
-                );
+        JPanel tarjeta = new JPanel(new GridBagLayout());
 
         tarjeta.setBackground(Color.WHITE);
+
         tarjeta.setBorder(
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(
                                 new Color(225, 218, 205)
                         ),
                         BorderFactory.createEmptyBorder(
-                                14, 20, 14, 20
+                                12, 12, 12, 12
                         )
-                ));
+                )
+        );
 
         // ==========================================
         // CINE
         // ==========================================
+
         String nombreCine = "Cine desconocido";
         String direccionCine = "";
 
         if (funcion.getSala() != null) {
-            Cine cine = funcionController.buscarCineDeSala(funcion.getSala());
+
+            Cine cine =
+                    funcionController.buscarCineDeSala(
+                            funcion.getSala()
+                    );
+
             if (cine != null) {
                 nombreCine = cine.getNombre();
-                direccionCine = cine.getDireccion() != null ? cine.getDireccion() : "";
+
+                direccionCine =
+                        cine.getDireccion() != null
+                                ? cine.getDireccion()
+                                : "";
             }
         }
 
-        String textoCine = direccionCine.isEmpty() ? nombreCine : nombreCine + " - " + direccionCine;
-        JLabel cine = crearEtiquetaDato("Cine / Sede", textoCine);
+        String textoCine =
+                direccionCine.isEmpty()
+                        ? nombreCine
+                        : nombreCine + " - " + direccionCine;
+
+        JLabel cine =
+                crearEtiquetaDato(
+                        "Cine / Sede",
+                        textoCine
+                );
+
         // ==========================================
         // SALA
         // ==========================================
@@ -194,10 +210,14 @@ public class FuncionesPanel extends JPanel {
                         ? funcion.getSala().getNombre()
                         : "Sin sala";
 
-        JLabel sala = crearEtiquetaDato("Sala", nombreSala);
+        JLabel sala =
+                crearEtiquetaDato(
+                        "Sala",
+                        nombreSala
+                );
 
         // ==========================================
-        // FECHA
+        // FECHA Y HORA
         // ==========================================
 
         String fecha =
@@ -208,40 +228,100 @@ public class FuncionesPanel extends JPanel {
                                 )
                         );
 
-        JLabel fechaLabel = crearEtiquetaDato("Fecha", fecha);
+        JLabel fechaHora =
+                crearEtiquetaDato(
+                        "Fecha y Hora de Incio",
+                        fecha + " · " + funcion.getHoraInicio()
+                );
 
         // ==========================================
-        // HORA Y PRECIO
+        // PRECIO
         // ==========================================
 
-        JLabel hora = crearEtiquetaDato("Hora", String.valueOf(funcion.getHoraInicio()));
-
-        JLabel precio = crearEtiquetaDato("Precio", "$" + funcion.getPrecio());
-
-        tarjeta.add(cine);
-        tarjeta.add(sala);
-        tarjeta.add(fechaLabel);
-        tarjeta.add(hora);
-        tarjeta.add(precio);
+        JLabel precio =
+                crearEtiquetaDato(
+                        "Precio",
+                        "$" + funcion.getPrecio()
+                );
 
         // ==========================================
-        // BOTON
+        // BOTÓN
         // ==========================================
 
-        BotonRedondeado seleccionar = Estilos.crearBotonPrincipal("Seleccionar");
-
-        JPanel contenedorBoton = new JPanel(new BorderLayout());
-        contenedorBoton.setOpaque(false);
-        contenedorBoton.add(seleccionar, BorderLayout.CENTER);
-
-        tarjeta.add(contenedorBoton);
+        BotonRedondeado seleccionar =
+                Estilos.crearBotonPrincipal(
+                        "Seleccionar"
+                );
 
         seleccionar.addActionListener(e ->
-                frame.mostrarAsientos(cliente, funcion)
+                frame.mostrarAsientos(
+                        cliente,
+                        funcion
+                )
         );
 
-        return tarjeta;
+        // ==========================================
+        // CONFIGURACIÓN GRIDBAG
+        // ==========================================
 
+        GridBagConstraints gbc =
+                new GridBagConstraints();
+
+        gbc.gridy = 0;
+        gbc.insets =
+                new Insets(0, 8, 0, 8);
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        // ==========================================
+        // CINE / SEDE
+        // ==========================================
+
+        gbc.gridx = 0;
+        gbc.weightx = 3.0;
+
+        tarjeta.add(cine, gbc);
+
+        // ==========================================
+        // SALA
+        // ==========================================
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+
+        tarjeta.add(sala, gbc);
+
+        // ==========================================
+        // FECHA + HORA
+        // ==========================================
+
+        gbc.gridx = 2;
+        gbc.weightx = 1.5;
+
+        tarjeta.add(fechaHora, gbc);
+
+        // ==========================================
+        // PRECIO
+        // ==========================================
+
+        gbc.gridx = 3;
+        gbc.weightx = 0.8;
+
+        tarjeta.add(precio, gbc);
+
+        // ==========================================
+        // BOTÓN
+        // ==========================================
+
+        gbc.gridx = 4;
+        gbc.weightx = 1.0;
+
+        gbc.fill = GridBagConstraints.NONE;
+
+        tarjeta.add(seleccionar, gbc);
+
+        return tarjeta;
     }
 
     private JLabel crearEtiquetaDato(String titulo, String valor) {

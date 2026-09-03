@@ -35,4 +35,16 @@ public class UsuarioValidator {
             throw new ValidationException("El teléfono debe tener entre 7 y 10 dígitos numéricos.");
         }
     }
+
+    public static void validarEdicion(String nombre, String telefono, String password) throws ValidationException {
+        if (nombre == null || nombre.isBlank()) {
+            throw new ValidationException("El nombre no puede estar vacío.");
+        }
+        if (telefono == null || !telefono.matches("\\d{7,15}")) {
+            throw new ValidationException("El teléfono no es válido.");
+        }
+        if (password == null || password.length() < 6) {
+            throw new ValidationException("La contraseña debe tener al menos 6 caracteres.");
+        }
+    }
 }

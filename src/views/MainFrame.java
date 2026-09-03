@@ -29,6 +29,7 @@ public class MainFrame extends JFrame {
 
     private final CineService cineService;
 
+
     // =========================================================
     // CONTROLLERS
     // =========================================================
@@ -325,4 +326,6 @@ public class MainFrame extends JFrame {
     public ReservaController getReservaController() {
         return reservaController;
     }
+
+    public LoginController getLoginController() {return loginController;}
 }

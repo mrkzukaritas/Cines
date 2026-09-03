@@ -28,4 +28,8 @@ public class LoginController {
     public Usuario manejarLogin(String email, String password) throws AutenticacionException {
         return authService.iniciarSesion(email, password);
     }
+    public void actualizarPerfil(Usuario usuario, String nombre, String telefono, String password)
+            throws ValidationException {
+        authService.actualizarPerfil(usuario, nombre, telefono, password);
+    }
 }

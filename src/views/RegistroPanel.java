@@ -108,8 +108,9 @@ public class RegistroPanel extends JPanel {
 
             loginController.manejarRegistro(cliente);
 
-            JOptionPane.showMessageDialog(
+            DialogoEstilizado.mostrarExito(
                     this,
+                    "Registro exitoso",
                     "Usuario registrado correctamente."
             );
 
@@ -119,11 +120,10 @@ public class RegistroPanel extends JPanel {
 
         } catch (ValidationException e) {
 
-            JOptionPane.showMessageDialog(
+            DialogoEstilizado.mostrarError(
                     this,
-                    e.getMessage(),
                     "Error de validación",
-                    JOptionPane.ERROR_MESSAGE
+                    e.getMessage()
             );
         }
     }

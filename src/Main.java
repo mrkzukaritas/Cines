@@ -33,7 +33,6 @@ public class Main {
 
             // ==============================
             // CLIENTE DE PRUEBA
-            // (para no tener que registrarte cada vez que abres la app)
             // ==============================
 
             Cliente clienteDemo = new Cliente(
