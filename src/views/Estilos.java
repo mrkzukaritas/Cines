@@ -16,6 +16,7 @@ public class Estilos {
     // ----- FUENTES -----
     public static final Font FUENTE_TITULO   = new Font("Segoe UI", Font.BOLD, 34);
     public static final Font FUENTE_SUBTITULO = new Font("Segoe UI", Font.ITALIC, 18);
+    public static final Font FUENTE_LABEL_FORMULARIO = new Font("Segoe UI", Font.BOLD, 14);
     public static final Font FUENTE_LABEL    = new Font("Segoe UI", Font.BOLD, 15);
     public static final Font FUENTE_CAMPO    = new Font("Segoe UI", Font.PLAIN, 16);
     public static final Font FUENTE_BOTON    = new Font("Segoe UI", Font.BOLD, 15);

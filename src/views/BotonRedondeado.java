@@ -12,6 +12,7 @@ public class BotonRedondeado extends JButton {
     private final Color colorHover;
     private boolean hover = false;
     private final int radio = 30;
+    private boolean tamanioMinimoActivo = true;
 
     public BotonRedondeado(String texto, Color colorNormal, Color colorHover, Color colorTexto) {
         super(texto.toUpperCase());
@@ -35,6 +36,11 @@ public class BotonRedondeado extends JButton {
         });
     }
 
+    public void usarComoBotonIcono() {
+        this.tamanioMinimoActivo = false;
+        setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -49,6 +55,9 @@ public class BotonRedondeado extends JButton {
 
     @Override
     public Dimension getPreferredSize() {
+        if (!tamanioMinimoActivo) {
+            return super.getPreferredSize();
+        }
         Dimension d = super.getPreferredSize();
         return new Dimension(Math.max(d.width, 160), Math.max(d.height, 48));
     }

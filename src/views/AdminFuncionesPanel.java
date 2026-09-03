@@ -117,11 +117,16 @@ public class AdminFuncionesPanel extends JPanel {
         estilizarCombo(comboTipoFuncion);
 
         // ---------- Campo de fecha con selector de calendario ----------
-        JTextField campoFecha = new JTextField(LocalDate.now().toString());
+        JTextField campoFecha = crearCampoTexto(LocalDate.now().toString());
         campoFecha.setEditable(false);
 
-        JButton btnCalendario = new JButton("📅");
+        BotonRedondeado btnCalendario = Estilos.crearBotonSecundario("");
+        btnCalendario.usarComoBotonIcono();
+        btnCalendario.setIcon(new IconoCalendario(16));
         btnCalendario.setToolTipText("Elegir fecha");
+        btnCalendario.setPreferredSize(new Dimension(28, 28));
+        btnCalendario.setMinimumSize(new Dimension(28, 28));
+        btnCalendario.setMaximumSize(new Dimension(28, 28));
         btnCalendario.addActionListener(e -> {
             LocalDate actual;
             try {
@@ -135,25 +140,25 @@ public class AdminFuncionesPanel extends JPanel {
             }
         });
 
-        JPanel panelFecha = new JPanel(new BorderLayout(4, 0));
+        JPanel panelFecha = new JPanel(new BorderLayout(6, 0));
         panelFecha.setOpaque(false);
         panelFecha.add(campoFecha, BorderLayout.CENTER);
         panelFecha.add(btnCalendario, BorderLayout.EAST);
 
-        JTextField campoHoraInicio = new JTextField("20:00");
-        JTextField campoHoraFin = new JTextField("22:00");
-        JTextField campoPrecio = new JTextField();
-        JTextField campoFormato = new JTextField("2D");
+        JTextField campoHoraInicio = crearCampoTexto("20:00");
+        JTextField campoHoraFin = crearCampoTexto("22:00");
+        JTextField campoPrecio = crearCampoTexto("");
+        JTextField campoFormato = crearCampoTexto("2D");
 
         comboCine.addActionListener(e -> actualizarSalasYTabla());
 
         JPanel form = new JPanel(new GridLayout(2, 5, 10, 4));
-        Estilos.aplicarFondoFormulario(form);
-        form.add(new JLabel("Cine"));
-        form.add(new JLabel("Sala"));
-        form.add(new JLabel("Película"));
-        form.add(new JLabel("Tipo función"));
-        form.add(new JLabel("Formato (2D/3D)"));
+        form.setOpaque(false);
+        form.add(crearEtiquetaFormulario("Cine"));
+        form.add(crearEtiquetaFormulario("Sala"));
+        form.add(crearEtiquetaFormulario("Película"));
+        form.add(crearEtiquetaFormulario("Tipo función"));
+        form.add(crearEtiquetaFormulario("Formato (2D/3D)"));
         form.add(comboCine);
         form.add(comboSala);
         form.add(comboPelicula);
@@ -161,11 +166,11 @@ public class AdminFuncionesPanel extends JPanel {
         form.add(campoFormato);
 
         JPanel form2 = new JPanel(new GridLayout(2, 4, 10, 4));
-        Estilos.aplicarFondoFormulario(form2);
-        form2.add(new JLabel("Fecha"));
-        form2.add(new JLabel("Hora inicio (HH:mm)"));
-        form2.add(new JLabel("Hora fin (HH:mm)"));
-        form2.add(new JLabel("Precio"));
+        form2.setOpaque(false);
+        form2.add(crearEtiquetaFormulario("Fecha"));
+        form2.add(crearEtiquetaFormulario("Hora inicio (HH:mm)"));
+        form2.add(crearEtiquetaFormulario("Hora fin (HH:mm)"));
+        form2.add(crearEtiquetaFormulario("Precio"));
         form2.add(panelFecha);
         form2.add(campoHoraInicio);
         form2.add(campoHoraFin);
@@ -182,7 +187,7 @@ public class AdminFuncionesPanel extends JPanel {
             TipoFuncionEnum tipo = (TipoFuncionEnum) comboTipoFuncion.getSelectedItem();
 
             if (cine == null || sala == null || pelicula == null) {
-                JOptionPane.showMessageDialog(this, "Selecciona cine, sala y película.");
+                DialogoEstilizado.mostrarAdvertencia(this, "Falta seleccionar", "Selecciona cine, sala y película.");
                 return;
             }
 
@@ -198,7 +203,7 @@ public class AdminFuncionesPanel extends JPanel {
                 );
 
                 if (creada == null) {
-                    JOptionPane.showMessageDialog(this,
+                    DialogoEstilizado.mostrarError(this, "Error",
                             "No se pudo crear la función. Revisa precio y horas.");
                     return;
                 }
@@ -207,7 +212,7 @@ public class AdminFuncionesPanel extends JPanel {
                 cargarTabla(cine);
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
+                DialogoEstilizado.mostrarError(this, "Datos inválidos",
                         "Revisa el formato de hora (HH:mm) y precio.\n" + ex.getMessage());
             }
         });
@@ -234,10 +239,10 @@ public class AdminFuncionesPanel extends JPanel {
         Estilos.aplicarFondoFormulario(sur);
         sur.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        sur.add(form);
-        sur.add(Box.createVerticalStrut(6));
-        sur.add(form2);
+        sur.add(envolverEnTarjeta(form));
         sur.add(Box.createVerticalStrut(10));
+        sur.add(envolverEnTarjeta(form2));
+        sur.add(Box.createVerticalStrut(12));
 
         JPanel botones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         Estilos.aplicarFondoFormulario(botones);
@@ -247,6 +252,21 @@ public class AdminFuncionesPanel extends JPanel {
         sur.add(botones);
 
         return sur;
+    }
+
+    /**
+     * Envuelve un panel de campos en una "tarjeta" blanca con borde redondeado,
+     * para separar visualmente los grupos de datos del formulario.
+     */
+    private JPanel envolverEnTarjeta(JPanel contenido) {
+        JPanel tarjeta = new JPanel(new BorderLayout());
+        tarjeta.setBackground(Color.WHITE);
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(230, 224, 210), 1, true),
+                BorderFactory.createEmptyBorder(10, 12, 10, 12)
+        ));
+        tarjeta.add(contenido, BorderLayout.CENTER);
+        return tarjeta;
     }
 
     private JTextField crearCampoTexto(String valorInicial) {
@@ -312,6 +332,59 @@ public class AdminFuncionesPanel extends JPanel {
                     f.getId(), pelicula, f.getSala().getNombre(), f.getFechaFuncion(),
                     f.getHoraInicio().format(FORMATO_HORA), f.getPrecio()
             });
+        }
+    }
+
+    /**
+     * Ícono de calendario dibujado a mano con Graphics2D.
+     * Evita depender de que la fuente del sistema tenga glyphs de emoji
+     * (📅 se veía como un ícono genérico en algunos entornos).
+     */
+    private static class IconoCalendario implements Icon {
+        private final int tam;
+
+        IconoCalendario(int tam) {
+            this.tam = tam;
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int ancho = tam;
+            int alto = tam;
+
+            // Cuerpo del calendario
+            g2.setColor(Color.WHITE);
+            g2.fillRoundRect(x, y + 3, ancho, alto - 3, 3, 3);
+
+            // Encabezado rojo
+            g2.setColor(Estilos.ROJO_PRINCIPAL);
+            g2.fillRoundRect(x, y + 3, ancho, 5, 3, 3);
+
+            // Borde
+            g2.setColor(Estilos.ROJO_PRINCIPAL);
+            g2.drawRoundRect(x, y + 3, ancho - 1, alto - 4, 3, 3);
+
+            // Anillas
+            g2.fillRect(x + 3, y, 2, 5);
+            g2.fillRect(x + ancho - 5, y, 2, 5);
+
+            // Línea del día
+            g2.drawLine(x + 3, y + alto - 6, x + ancho - 3, y + alto - 6);
+
+            g2.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return tam;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return tam;
         }
     }
 }
